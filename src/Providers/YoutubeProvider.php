@@ -99,7 +99,7 @@ class YoutubeProvider
 
             'title'       => $videoMetas['title'],
             'description' => $videoMetas['description'],
-            'keywords'    => $videoMetas['og:video:tag:array'],
+            'tags'        => $videoMetas['og:video:tag:array'],
 
             'thumbnails' => [
                 // https://stackoverflow.com/a/20542029/755393

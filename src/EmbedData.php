@@ -11,7 +11,7 @@ namespace Rentalhost\Vanilla\Embed;
  *
  * @property-read string      $title
  * @property-read string|null $description
- * @property-read string[]    $keywords
+ * @property-read string[]    $tags
  *
  * @property-read string[]    $thumbnails
  *

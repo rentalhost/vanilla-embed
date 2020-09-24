@@ -55,7 +55,7 @@ class YoutubeProviderTest
 
         static::assertSame('Luis Fonsi - Despacito ft. Daddy Yankee', $embedData->title);
         static::assertStringContainsString('Despacito', $embedData->description);
-        static::assertContains('Despacito', $embedData->keywords);
+        static::assertContains('Despacito', $embedData->tags);
     }
 
     public function testWithInvalidGoogleKey(): void
