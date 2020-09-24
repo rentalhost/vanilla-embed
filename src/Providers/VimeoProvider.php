@@ -6,6 +6,7 @@ namespace Rentalhost\Vanilla\Embed\Providers;
 
 use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
+use Rentalhost\Vanilla\Embed\Providers\EmbedData\VimeoEmbedData;
 use Rentalhost\Vanilla\Embed\Support\MetaSupport;
 
 class VimeoProvider
@@ -67,9 +68,10 @@ class VimeoProvider
             ];
         }
 
-        return EmbedData::withAttributes(array_merge([
+        return VimeoEmbedData::withAttributes(array_merge([
             'provider'   => 'vimeo',
             'id'         => $videoId,
+            'idKey'      => $videoKey,
             'url'        => $videoUrl,
             'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId . '?app_id=122963',
             'thumbnails' => $videoThumbnails

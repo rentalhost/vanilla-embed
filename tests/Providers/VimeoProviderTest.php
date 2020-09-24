@@ -29,11 +29,14 @@ class VimeoProviderTest
 
     public function testEmbedDataGetThumbnail(): void
     {
-        $embedDataThumbnail = Embed::create()->fromUrl('https://vimeo.com/29950141')->getThumbnail();
+        /** @var VimeoEmbedData $embedData */
+        $embedData          = Embed::create()->fromUrl('https://vimeo.com/344997253/ab1b6f2867');
+        $embedDataThumbnail = $embedData->getThumbnail();
 
-        static::assertStringEndsWith('/487882964_1280x720.jpg', $embedDataThumbnail->url);
+        static::assertStringEndsWith('/811379236_1280x656.jpg', $embedDataThumbnail->url);
         static::assertSame(1280, $embedDataThumbnail->width);
-        static::assertSame(720, $embedDataThumbnail->height);
+        static::assertSame(656, $embedDataThumbnail->height);
+        static::assertSame('ab1b6f2867', $embedData->idKey);
     }
 
     /** @dataProvider dataProviderIsUrlCompatible */
