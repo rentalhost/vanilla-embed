@@ -10,12 +10,35 @@ use Rentalhost\Vanilla\Embed\EmbedData;
 class EmbedDataTest
     extends TestCase
 {
-    public function testGetSuggestedThumbnail(): void
+    public function testGetThumbnailAsNull(): void
+    {
+        $embedData = EmbedData::withAttributes([]);
+
+        static::assertNull($embedData->getThumbnail());
+    }
+
+    public function testGetThumbnailAsNullDueToInexistence(): void
+    {
+        $embedData = EmbedData::withAttributes([ 'thumbnails' => [ 'high' => [] ] ]);
+
+        static::assertNull($embedData->getThumbnail('inexistent'));
+    }
+
+    public function testGetThumbnailBasedOnPreferredOrder(): void
     {
         $suggestedUrl = 'https://.../suggested.jpg';
-        $embedData    = EmbedData::withAttributes([ 'thumbnails' => [ EmbedData::SUGGESTED_THUMBNAIL => $suggestedUrl ] ]);
+        $embedData    = EmbedData::withAttributes([ 'thumbnails' => [ 'low' => [ 'url' => 'nope' ], 'high' => [ 'url' => $suggestedUrl ] ] ])
+            ->setPreferredThumbnailOrder([ 'high' ]);
 
-        static::assertSame($suggestedUrl, $embedData->getSuggestedThumbnail());
+        static::assertSame($suggestedUrl, $embedData->getThumbnail()->url);
+    }
+
+    public function testGetThumbnailWithoutAPreferredOrder(): void
+    {
+        $suggestedUrl = 'https://.../suggested.jpg';
+        $embedData    = EmbedData::withAttributes([ 'thumbnails' => [ 'low' => [ 'url' => 'nope' ], 'high' => [ 'url' => $suggestedUrl ] ] ]);
+
+        static::assertSame($suggestedUrl, $embedData->getThumbnail()->url);
     }
 
     public function testGetUrlData(): void

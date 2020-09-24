@@ -102,9 +102,9 @@ class YoutubeProvider
             'tags'        => $videoMetas['og:video:tag:array'],
 
             'thumbnails' => [
-                'default' => $videoThumbnailBase . '/default.jpg',
-                'medium'  => $videoThumbnailBase . '/mqdefault.jpg',
-                'high'    => $videoThumbnailBase . '/hqdefault.jpg'
+                'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
+                'medium'  => [ 'url' => $videoThumbnailBase . '/mqdefault.jpg', 'width' => 320, 'height' => 180 ],
+                'high'    => [ 'url' => $videoThumbnailBase . '/hqdefault.jpg', 'width' => 480, 'height' => 360 ]
             ],
 
             'url'      => $videoUrl,
