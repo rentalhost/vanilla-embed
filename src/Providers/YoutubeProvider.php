@@ -68,7 +68,7 @@ class YoutubeProvider
         $videoId            = self::extractVideoId($normalizedUrl);
         $videoUrl           = 'https://youtu.be/' . $videoId;
         $videoThumbnailBase = 'https://i.ytimg.com/vi/' . $videoId;
-        $videoMetas         = null;
+        $videoProperties    = [];
         $videoThumbnails    = [];
 
         $googleKey = $embed->getOption('google.key');
@@ -84,15 +84,19 @@ class YoutubeProvider
 
             $guzzleResponseJson = json_decode($guzzleResponse->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
-            $videoMetas['title']              = $guzzleResponseJson['items'][0]['snippet']['title'] ?? null;
-            $videoMetas['description']        = $guzzleResponseJson['items'][0]['snippet']['description'] ?? null;
-            $videoMetas['og:video:tag:array'] = $guzzleResponseJson['items'][0]['snippet']['tags'] ?? null;
+            $videoProperties['title']       = $guzzleResponseJson['items'][0]['snippet']['title'] ?? null;
+            $videoProperties['description'] = $guzzleResponseJson['items'][0]['snippet']['description'] ?? null;
+            $videoProperties['tags']        = $guzzleResponseJson['items'][0]['snippet']['tags'] ?? null;
 
             $videoThumbnails = $guzzleResponseJson['items'][0]['snippet']['thumbnails'] ?? [];
         }
 
-        if (!$videoMetas) {
-            $videoMetas = MetaSupport::extractMetasFromUrl($videoUrl);
+        if (!$videoProperties) {
+            $videoMetasExtracted = MetaSupport::extractMetasFromUrl($videoUrl);
+
+            $videoProperties['title']       = $videoMetasExtracted['title'];
+            $videoProperties['description'] = $videoMetasExtracted['description'];
+            $videoProperties['tags']        = $videoMetasExtracted['og:video:tag:array'];
 
             $videoThumbnails = [
                 'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
@@ -101,19 +105,12 @@ class YoutubeProvider
             ];
         }
 
-        return EmbedData::withAttributes([
-            'provider' => 'youtube',
-
-            'id' => $videoId,
-
-            'title'       => $videoMetas['title'],
-            'description' => $videoMetas['description'],
-            'tags'        => $videoMetas['og:video:tag:array'],
-
-            'thumbnails' => $videoThumbnails,
-
-            'url'      => $videoUrl,
-            'urlEmbed' => 'https://youtube.com/embed/' . $videoId
-        ])->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
+        return EmbedData::withAttributes(array_merge([
+            'provider'   => 'youtube',
+            'id'         => $videoId,
+            'url'        => $videoUrl,
+            'urlEmbed'   => 'https://youtube.com/embed/' . $videoId,
+            'thumbnails' => $videoThumbnails
+        ], $videoProperties))->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
     }
 }
