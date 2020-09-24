@@ -75,6 +75,6 @@ class VimeoProvider
             'url'        => $videoUrl,
             'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId . '?app_id=122963',
             'thumbnails' => $videoThumbnails
-        ], $videoProperties))->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
+        ], $videoProperties));
     }
 }
