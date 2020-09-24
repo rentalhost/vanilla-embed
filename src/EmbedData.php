@@ -22,9 +22,9 @@ use Rentalhost\Vanilla\Embed\Providers\Data\ThumbnailData;
  */
 class EmbedData
 {
-    private array $attributes = [];
-
     private array $preferredThumbnailOrder = [];
+
+    protected array $attributes = [];
 
     public static function withAttributes(array $attributes): self
     {
