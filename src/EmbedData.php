@@ -28,7 +28,7 @@ class EmbedData
 
     public static function withAttributes(array $attributes): self
     {
-        $embedData             = new self;
+        $embedData             = new static;
         $embedData->attributes = $attributes;
 
         return $embedData;
