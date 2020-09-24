@@ -16,7 +16,7 @@ class EmbedTest
     {
         return [
             [
-                'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+                'https://youtube.com/watch?v=kJQP7kiw5Fk',
                 [
                     'title' => 'Luis Fonsi - Despacito ft. Daddy Yankee',
                     'url'   => 'https://youtu.be/kJQP7kiw5Fk',

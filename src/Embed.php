@@ -21,7 +21,7 @@ class Embed
 
     private static function normalizeUrl(string $url): ?string
     {
-        if (preg_match('~^https?://(?:www\.)(.+)~', $url, $urlMatch)) {
+        if (preg_match('~^https?://(?:www\.)?(.+)~', $url, $urlMatch)) {
             return $urlMatch[1];
         }
 
