@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed;
 
-use Symfony\Component\DomCrawler\Crawler;
-
 /**
  * @property-read string      $provider
  *
@@ -26,39 +24,6 @@ class EmbedData
         SUGGESTED_THUMBNAIL = 'suggested';
 
     private array $attributes = [];
-
-    public static function extractMetas(string $url): array
-    {
-        $crawler      = new Crawler(file_get_contents($url));
-        $crawlerMetas = [];
-
-        $crawler->filterXPath('//meta[@content]')->each(static function (Crawler $node) use (&$crawlerMetas) {
-            $nodeName = $node->attr('name') ?: $node->attr('property') ?: $node->attr('itemprop');
-
-            if ($nodeName) {
-                $crawlerMetas[$nodeName][] = $node->attr('content');
-            }
-        });
-
-        $outputMetas = [];
-
-        foreach ($crawlerMetas as $crawlerMetaKey => $crawlerMetaValue) {
-            if (count($crawlerMetaValue) >= 2) {
-                $crawlerMetaValueUnique = array_unique($crawlerMetaValue);
-
-                if (count($crawlerMetaValueUnique) >= 2) {
-                    $outputMetas[$crawlerMetaKey]            = $crawlerMetaValue[array_key_last($crawlerMetaValue)];
-                    $outputMetas[$crawlerMetaKey . ':array'] = $crawlerMetaValueUnique;
-
-                    continue;
-                }
-            }
-
-            $outputMetas[$crawlerMetaKey] = $crawlerMetaValue[0];
-        }
-
-        return $outputMetas;
-    }
 
     public static function withAttributes(array $attributes): self
     {

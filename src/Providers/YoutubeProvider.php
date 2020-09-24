@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rentalhost\Vanilla\Embed\Providers;
 
 use Rentalhost\Vanilla\Embed\EmbedData;
+use Rentalhost\Vanilla\Embed\Support\MetaSupport;
 
 class YoutubeProvider
     extends Provider
@@ -64,7 +65,7 @@ class YoutubeProvider
     {
         $videoId            = self::extractVideoId($normalizedUrl);
         $videoUrl           = 'https://youtu.be/' . $videoId;
-        $videoMetas         = EmbedData::extractMetas($videoUrl);
+        $videoMetas         = MetaSupport::extractMetasFromUrl($videoUrl);
         $videoThumbnailBase = 'https://i.ytimg.com/vi/' . $videoId;
 
         return EmbedData::withAttributes([
