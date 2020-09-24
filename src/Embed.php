@@ -15,6 +15,8 @@ class Embed
         YoutubeProvider::class
     ];
 
+    private array $options;
+
     private function __construct()
     {
     }
@@ -32,9 +34,12 @@ class Embed
         return null;
     }
 
-    public static function create(): self
+    public static function create(?array $options = null): self
     {
-        return new static;
+        $embed          = new static;
+        $embed->options = $options ?? [];
+
+        return $embed;
     }
 
     public function fromUrl(?string $url): EmbedData
@@ -59,5 +64,11 @@ class Embed
         throw new ProviderNotImplementedException(
             sprintf('provider for %s yet not implemented', parse_url('//' . $normalizedUrl, PHP_URL_HOST))
         );
+    }
+
+    /** @return mixed */
+    public function getOption(string $name)
+    {
+        return $this->options[$name] ?? null;
     }
 }
