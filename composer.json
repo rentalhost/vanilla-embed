@@ -26,7 +26,8 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "symfony/dom-crawler": "^5.1.5"
+        "symfony/dom-crawler": "^5.1.5",
+        "guzzlehttp/guzzle": "^7.1.0"
     },
 
     "require-dev": {
