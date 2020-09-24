@@ -15,6 +15,10 @@ class Embed
         YoutubeProvider::class
     ];
 
+    private function __construct()
+    {
+    }
+
     private static function normalizeUrl(string $url): ?string
     {
         if (preg_match('~^https?://(?:www\.)(.+)~', $url, $urlMatch)) {
@@ -26,6 +30,11 @@ class Embed
         }
 
         return null;
+    }
+
+    public static function create(): self
+    {
+        return new static;
     }
 
     public function fromUrl(?string $url): EmbedData

@@ -34,7 +34,7 @@ class EmbedTest
     /** @dataProvider dataProviderFromUrl */
     public function testFromUrl(string $url, array $exceptedAttributes): void
     {
-        $embedData = (new Embed)->fromUrl($url);
+        $embedData = Embed::create()->fromUrl($url);
 
         foreach ($exceptedAttributes as $exceptedAttributeKey => $exceptedAttributeValue) {
             static::assertSame(
@@ -50,7 +50,7 @@ class EmbedTest
         $this->expectException(InvalidUrlException::class);
         $this->expectExceptionMessage('could not parse Url');
 
-        (new Embed)->fromUrl('invalid.url');
+        Embed::create()->fromUrl('invalid.url');
     }
 
     public function testInvalidUrlExceptionForEmptyUrl(): void
@@ -58,7 +58,7 @@ class EmbedTest
         $this->expectException(InvalidUrlException::class);
         $this->expectExceptionMessage('Url is empty');
 
-        (new Embed)->fromUrl(null);
+        Embed::create()->fromUrl(null);
     }
 
     public function testProviderNotImplementedException(): void
@@ -66,6 +66,6 @@ class EmbedTest
         $this->expectException(ProviderNotImplementedException::class);
         $this->expectExceptionMessage('provider for not.implemented yet not implemented');
 
-        (new Embed)->fromUrl('not.implemented/');
+        Embed::create()->fromUrl('not.implemented/');
     }
 }
