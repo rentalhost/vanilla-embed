@@ -102,40 +102,9 @@ class YoutubeProvider
             'tags'        => $videoMetas['og:video:tag:array'],
 
             'thumbnails' => [
-                // https://stackoverflow.com/a/20542029/755393
-                // Resolution 120x90 (guaranteed).
-                'default'                      => $videoThumbnailBase . '/default.jpg',
-                '1'                            => $videoThumbnailBase . '/1.jpg',
-                '2'                            => $videoThumbnailBase . '/2.jpg',
-                '3'                            => $videoThumbnailBase . '/3.jpg',
-
-                // Resolution 320x180 (guaranteed).
-                'mqdefault'                    => $videoThumbnailBase . '/mqdefault.jpg',
-                'mq1'                          => $videoThumbnailBase . '/mq1.jpg',
-                'mq2'                          => $videoThumbnailBase . '/mq2.jpg',
-                'mq3'                          => $videoThumbnailBase . '/mq3.jpg',
-
-                // Resolution 480x360 (guaranteed).
-                'hqdefault'                    => $videoThumbnailBase . '/hqdefault.jpg',
-                'hq1'                          => $videoThumbnailBase . '/hq1.jpg',
-                'hq2'                          => $videoThumbnailBase . '/hq2.jpg',
-                'hq3'                          => $videoThumbnailBase . '/hq3.jpg',
-                '0'                            => $videoThumbnailBase . '/0.jpg',
-
-                // Resolution 640x480.
-                'sddefault'                    => $videoThumbnailBase . '/sddefault.jpg',
-                'sd1'                          => $videoThumbnailBase . '/sd1.jpg',
-                'sd2'                          => $videoThumbnailBase . '/sd2.jpg',
-                'sd3'                          => $videoThumbnailBase . '/sd3.jpg',
-
-                // Resolution 1280x720.
-                'hq720'                        => $videoThumbnailBase . '/hq720.jpg',
-
-                // Max resolution available.
-                'maxresdefault'                => $videoThumbnailBase . '/maxresdefault.jpg',
-
-                // Suggested resolution.
-                EmbedData::SUGGESTED_THUMBNAIL => $videoThumbnailBase . '/mqdefault.jpg',
+                'default' => $videoThumbnailBase . '/default.jpg',
+                'medium'  => $videoThumbnailBase . '/mqdefault.jpg',
+                'high'    => $videoThumbnailBase . '/hqdefault.jpg'
             ],
 
             'url'      => $videoUrl,
