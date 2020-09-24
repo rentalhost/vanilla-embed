@@ -27,6 +27,24 @@ class EmbedTest
                 // Recoverable non-normalized Url.
                 'youtube.com/watch?v=kJQP7kiw5Fk',
                 [ 'id' => 'kJQP7kiw5Fk' ]
+            ],
+            [
+                'https://vimeo.com/29950141',
+                [
+                    'title'    => 'Landscapes: Volume Two',
+                    'url'      => 'https://vimeo.com/29950141',
+                    'urlEmbed' => 'https://player.vimeo.com/video/29950141?app_id=122963',
+                    'id'       => '29950141'
+                ]
+            ],
+            [
+                'https://vimeo.com/344997253/ab1b6f2867',
+                [
+                    'title'    => 'CAP Roundtable 2019.06.26',
+                    'url'      => 'https://vimeo.com/344997253/ab1b6f2867',
+                    'urlEmbed' => 'https://player.vimeo.com/video/344997253?app_id=122963',
+                    'id'       => '344997253'
+                ]
             ]
         ];
     }

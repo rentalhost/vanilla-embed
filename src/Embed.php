@@ -7,12 +7,14 @@ namespace Rentalhost\Vanilla\Embed;
 use Rentalhost\Vanilla\Embed\Exceptions\InvalidUrlException;
 use Rentalhost\Vanilla\Embed\Exceptions\ProviderNotImplementedException;
 use Rentalhost\Vanilla\Embed\Providers\Provider;
+use Rentalhost\Vanilla\Embed\Providers\VimeoProvider;
 use Rentalhost\Vanilla\Embed\Providers\YoutubeProvider;
 
 class Embed
 {
     private const EMBED_PROVIDERS = [
-        YoutubeProvider::class
+        YoutubeProvider::class,
+        VimeoProvider::class
     ];
 
     private array $options;
