@@ -69,6 +69,7 @@ class YoutubeProvider
         $videoUrl           = 'https://youtu.be/' . $videoId;
         $videoThumbnailBase = 'https://i.ytimg.com/vi/' . $videoId;
         $videoMetas         = null;
+        $videoThumbnails    = [];
 
         $googleKey = $embed->getOption('google.key');
 
@@ -86,10 +87,18 @@ class YoutubeProvider
             $videoMetas['title']              = $guzzleResponseJson['items'][0]['snippet']['title'] ?? null;
             $videoMetas['description']        = $guzzleResponseJson['items'][0]['snippet']['description'] ?? null;
             $videoMetas['og:video:tag:array'] = $guzzleResponseJson['items'][0]['snippet']['tags'] ?? null;
+
+            $videoThumbnails = $guzzleResponseJson['items'][0]['snippet']['thumbnails'] ?? [];
         }
 
         if (!$videoMetas) {
             $videoMetas = MetaSupport::extractMetasFromUrl($videoUrl);
+
+            $videoThumbnails = [
+                'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
+                'medium'  => [ 'url' => $videoThumbnailBase . '/mqdefault.jpg', 'width' => 320, 'height' => 180 ],
+                'high'    => [ 'url' => $videoThumbnailBase . '/hqdefault.jpg', 'width' => 480, 'height' => 360 ]
+            ];
         }
 
         return EmbedData::withAttributes([
@@ -101,14 +110,10 @@ class YoutubeProvider
             'description' => $videoMetas['description'],
             'tags'        => $videoMetas['og:video:tag:array'],
 
-            'thumbnails' => [
-                'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
-                'medium'  => [ 'url' => $videoThumbnailBase . '/mqdefault.jpg', 'width' => 320, 'height' => 180 ],
-                'high'    => [ 'url' => $videoThumbnailBase . '/hqdefault.jpg', 'width' => 480, 'height' => 360 ]
-            ],
+            'thumbnails' => $videoThumbnails,
 
             'url'      => $videoUrl,
             'urlEmbed' => 'https://youtube.com/embed/' . $videoId
-        ]);
+        ])->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
     }
 }
