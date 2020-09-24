@@ -18,9 +18,10 @@ class EmbedTest
             [
                 'https://youtube.com/watch?v=kJQP7kiw5Fk',
                 [
-                    'title' => 'Luis Fonsi - Despacito ft. Daddy Yankee',
-                    'url'   => 'https://youtu.be/kJQP7kiw5Fk',
-                    'id'    => 'kJQP7kiw5Fk'
+                    'provider' => 'youtube',
+                    'title'    => 'Luis Fonsi - Despacito ft. Daddy Yankee',
+                    'url'      => 'https://youtu.be/kJQP7kiw5Fk',
+                    'id'       => 'kJQP7kiw5Fk'
                 ]
             ],
             [
@@ -31,6 +32,7 @@ class EmbedTest
             [
                 'https://vimeo.com/29950141',
                 [
+                    'provider' => 'vimeo',
                     'title'    => 'Landscapes: Volume Two',
                     'url'      => 'https://vimeo.com/29950141',
                     'urlEmbed' => 'https://player.vimeo.com/video/29950141?app_id=122963',
