@@ -43,6 +43,6 @@ class MetaSupport
 
     public static function extractMetasFromUrl(string $url): array
     {
-        return self::extractMetas(file_get_contents($url));
+        return self::extractMetas((string) UrlSupport::getContents($url));
     }
 }

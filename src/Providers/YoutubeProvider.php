@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
-use GuzzleHttp\Client as GuzzleClient;
 use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
 use Rentalhost\Vanilla\Embed\Support\MetaSupport;
+use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 
 class YoutubeProvider
     extends Provider
@@ -74,21 +74,17 @@ class YoutubeProvider
         $googleKey = $embed->getOption('google.key');
 
         if ($googleKey) {
-            $guzzleResponse = (new GuzzleClient)->get('https://www.googleapis.com/youtube/v3/videos', [
-                'query' => [
-                    'key'  => $googleKey,
-                    'id'   => $videoId,
-                    'part' => 'snippet'
-                ]
-            ]);
+            $responseJson = json_decode(UrlSupport::getContents('https://www.googleapis.com/youtube/v3/videos', [
+                'key'  => $googleKey,
+                'id'   => $videoId,
+                'part' => 'snippet'
+            ]), true, 512, JSON_THROW_ON_ERROR);
 
-            $guzzleResponseJson = json_decode($guzzleResponse->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+            $videoProperties['title']       = $responseJson['items'][0]['snippet']['title'] ?? null;
+            $videoProperties['description'] = $responseJson['items'][0]['snippet']['description'] ?? null;
+            $videoProperties['tags']        = $responseJson['items'][0]['snippet']['tags'] ?? null;
 
-            $videoProperties['title']       = $guzzleResponseJson['items'][0]['snippet']['title'] ?? null;
-            $videoProperties['description'] = $guzzleResponseJson['items'][0]['snippet']['description'] ?? null;
-            $videoProperties['tags']        = $guzzleResponseJson['items'][0]['snippet']['tags'] ?? null;
-
-            $videoThumbnails = $guzzleResponseJson['items'][0]['snippet']['thumbnails'] ?? [];
+            $videoThumbnails = $responseJson['items'][0]['snippet']['thumbnails'] ?? [];
         }
 
         if (!$videoProperties) {
