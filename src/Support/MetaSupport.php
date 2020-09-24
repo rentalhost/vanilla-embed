@@ -8,37 +8,60 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetaSupport
 {
-    public static function extractMetas(string $contents): array
+    private static function extractNormalizedMetas(string $contents, string $metaXPath, array $metaNames, string $metaContent): array
     {
-        $crawler      = new Crawler($contents);
         $crawlerMetas = [];
 
-        $crawler->filterXPath('//meta[@content]')->each(static function (Crawler $node) use (&$crawlerMetas) {
-            $nodeName = $node->attr('name') ?: $node->attr('property') ?: $node->attr('itemprop');
+        $crawler = new Crawler($contents);
+        $crawler->filterXPath($metaXPath)->each(static function (Crawler $node) use (&$crawlerMetas, $metaNames, $metaContent) {
+            $nodeName = null;
+
+            foreach ($metaNames as $metaName) {
+                $nodeName = $node->attr($metaName);
+
+                if ($nodeName) {
+                    break;
+                }
+            }
 
             if ($nodeName) {
-                $crawlerMetas[$nodeName][] = $node->attr('content');
+                $crawlerMetas[$nodeName][] = $node->attr($metaContent);
             }
         });
 
-        $outputMetas = [];
+        $normalizedMetas = [];
 
         foreach ($crawlerMetas as $crawlerMetaKey => $crawlerMetaValue) {
             if (count($crawlerMetaValue) >= 2) {
                 $crawlerMetaValueUnique = array_unique($crawlerMetaValue);
 
                 if (count($crawlerMetaValueUnique) >= 2) {
-                    $outputMetas[$crawlerMetaKey]            = $crawlerMetaValue[array_key_last($crawlerMetaValue)];
-                    $outputMetas[$crawlerMetaKey . ':array'] = $crawlerMetaValueUnique;
+                    $normalizedMetas[$crawlerMetaKey]            = $crawlerMetaValue[array_key_last($crawlerMetaValue)];
+                    $normalizedMetas[$crawlerMetaKey . ':array'] = $crawlerMetaValueUnique;
 
                     continue;
                 }
             }
 
-            $outputMetas[$crawlerMetaKey] = $crawlerMetaValue[0];
+            $normalizedMetas[$crawlerMetaKey] = $crawlerMetaValue[0];
         }
 
-        return $outputMetas;
+        return $normalizedMetas;
+    }
+
+    public static function extractLinks(string $contents): array
+    {
+        return self::extractNormalizedMetas($contents, '//link[@rel]', [ 'rel' ], 'href');
+    }
+
+    public static function extractLinksFromUrl(string $url): array
+    {
+        return self::extractLinks((string) UrlSupport::getContents($url));
+    }
+
+    public static function extractMetas(string $contents): array
+    {
+        return self::extractNormalizedMetas($contents, '//meta[@content]', [ 'name', 'property', 'itemprop' ], 'content');
     }
 
     public static function extractMetasFromUrl(string $url): array

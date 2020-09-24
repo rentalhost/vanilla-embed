@@ -10,7 +10,9 @@ class UrlSupport
 {
     private static function getContentsUncached(string $url, ?array $querystring): ?string
     {
-        return (new GuzzleClient)->get($url, [ 'query' => $querystring ?? [] ])->getBody()->getContents();
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $urlQuerystring);
+
+        return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
     }
 
     public static function getContents(string $url, ?array $querystring = null): ?string

@@ -47,6 +47,47 @@ class EmbedTest
                     'urlEmbed' => 'https://player.vimeo.com/video/344997253?app_id=122963',
                     'id'       => '344997253'
                 ]
+            ],
+            [
+                'https://soundcloud.com/david-rodrigues-277280782/impact-moderato-1',
+                [
+                    'title'       => 'Impact Moderato (Public)',
+                    'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato-1',
+                    'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898962922',
+                    'id'          => 'david-rodrigues-277280782/impact-moderato-1',
+                    'tags'        => [ 'Cinematic', 'test' ],
+                    'trackId'     => 898962922,
+                    'trackUser'   => 'david-rodrigues-277280782',
+                    'trackName'   => 'impact-moderato-1',
+                    'trackSecret' => null
+                ]
+            ],
+            [
+                'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
+                [
+                    'title'       => 'Impact Moderato (Unlisted)',
+                    'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
+                    'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
+                    'id'          => 'david-rodrigues-277280782/impact-moderato',
+                    'tags'        => [ 'Cinematic' ],
+                    'trackId'     => 898937494,
+                    'trackUser'   => 'david-rodrigues-277280782',
+                    'trackName'   => 'impact-moderato',
+                    'trackSecret' => 's-MjcQ5BtcRPp'
+                ]
+            ],
+            [
+                'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
+                [
+                    'title'       => 'Impact Moderato (Unlisted)',
+                    'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
+                    'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
+                    'id'          => 'david-rodrigues-277280782/impact-moderato',
+                    'trackId'     => 898937494,
+                    'trackUser'   => 'david-rodrigues-277280782',
+                    'trackName'   => 'impact-moderato',
+                    'trackSecret' => 's-MjcQ5BtcRPp'
+                ]
             ]
         ];
     }
