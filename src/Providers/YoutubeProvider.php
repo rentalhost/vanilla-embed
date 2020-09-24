@@ -61,7 +61,7 @@ class YoutubeProvider
         return self::isValidId(self::extractVideoId($normalizedUrl));
     }
 
-    public static function extractEmbedData(string $normalizedUrl): EmbedData
+    public static function extractEmbedData(Embed $embed, string $normalizedUrl): EmbedData
     {
         $videoId            = self::extractVideoId($normalizedUrl);
         $videoUrl           = 'https://youtu.be/' . $videoId;

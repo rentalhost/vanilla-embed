@@ -52,7 +52,7 @@ class Embed
         /** @var Provider|string $embedProviderClass */
         foreach (self::EMBED_PROVIDERS as $embedProviderClass) {
             if ($embedProviderClass::isUrlCompatible($normalizedUrl)) {
-                return $embedProviderClass::extractEmbedData($normalizedUrl);
+                return $embedProviderClass::extractEmbedData($this, $normalizedUrl);
             }
         }
 
