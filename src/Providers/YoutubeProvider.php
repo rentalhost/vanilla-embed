@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
+use GuzzleHttp\Client as GuzzleClient;
+use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
 use Rentalhost\Vanilla\Embed\Support\MetaSupport;
 
@@ -65,8 +67,30 @@ class YoutubeProvider
     {
         $videoId            = self::extractVideoId($normalizedUrl);
         $videoUrl           = 'https://youtu.be/' . $videoId;
-        $videoMetas         = MetaSupport::extractMetasFromUrl($videoUrl);
         $videoThumbnailBase = 'https://i.ytimg.com/vi/' . $videoId;
+        $videoMetas         = null;
+
+        $googleKey = $embed->getOption('google.key');
+
+        if ($googleKey) {
+            $guzzleResponse = (new GuzzleClient)->get('https://www.googleapis.com/youtube/v3/videos', [
+                'query' => [
+                    'key'  => $googleKey,
+                    'id'   => $videoId,
+                    'part' => 'snippet'
+                ]
+            ]);
+
+            $guzzleResponseJson = json_decode($guzzleResponse->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+            $videoMetas['title']              = $guzzleResponseJson['items'][0]['snippet']['title'] ?? null;
+            $videoMetas['description']        = $guzzleResponseJson['items'][0]['snippet']['description'] ?? null;
+            $videoMetas['og:video:tag:array'] = $guzzleResponseJson['items'][0]['snippet']['tags'] ?? null;
+        }
+
+        if (!$videoMetas) {
+            $videoMetas = MetaSupport::extractMetasFromUrl($videoUrl);
+        }
 
         return EmbedData::withAttributes([
             'provider' => 'youtube',
