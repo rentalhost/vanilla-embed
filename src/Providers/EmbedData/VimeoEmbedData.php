@@ -13,9 +13,13 @@ use Rentalhost\Vanilla\Embed\Providers\Data\ThumbnailData;
 class VimeoEmbedData
     extends EmbedData
 {
-    public function getThumbnailSized(int $width, int $height): ThumbnailData
+    public function getThumbnailSized(int $width, ?int $height = null): ThumbnailData
     {
         $thumbnailUrl = $this->attributes['thumbnails']['default']['url'];
+
+        if (!$height) {
+            return ThumbnailData::create(preg_replace('~\d+x\d+~', $width, $thumbnailUrl), $width, null);
+        }
 
         return ThumbnailData::create(preg_replace('~\d+x\d+~', $width . 'x' . $height, $thumbnailUrl), $width, $height);
     }

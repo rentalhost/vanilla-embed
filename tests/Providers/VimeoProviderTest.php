@@ -44,6 +44,12 @@ class VimeoProviderTest
         static::assertStringEndsWith('/811379236_640x480.jpg', $embedDataThumbnailSized->url);
         static::assertSame(640, $embedDataThumbnailSized->width);
         static::assertSame(480, $embedDataThumbnailSized->height);
+
+        $embedDataThumbnailSizedWithoutHeight = $embedData->getThumbnailSized(640);
+
+        static::assertStringEndsWith('/811379236_640.jpg', $embedDataThumbnailSizedWithoutHeight->url);
+        static::assertSame(640, $embedDataThumbnailSizedWithoutHeight->width);
+        static::assertNull($embedDataThumbnailSizedWithoutHeight->height);
     }
 
     /** @dataProvider dataProviderIsUrlCompatible */
