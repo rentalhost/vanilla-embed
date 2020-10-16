@@ -8,6 +8,7 @@ use Rentalhost\Vanilla\Embed\Providers\Data\ThumbnailData;
 
 /**
  * @property-read string      $provider
+ * @property-read bool        $found
  *
  * @property-read string      $id
  *

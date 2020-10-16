@@ -44,6 +44,16 @@ class YoutubeProvider
         return null;
     }
 
+    private static function getNotFoundResponse(string $videoId, string $videoUrl): EmbedData
+    {
+        return EmbedData::withAttributes([
+            'provider' => 'youtube',
+            'found'    => false,
+            'id'       => $videoId,
+            'url'      => $videoUrl
+        ]);
+    }
+
     private static function isValidId(?string $id): bool
     {
         if (!$id) {
@@ -80,6 +90,10 @@ class YoutubeProvider
                 'part' => 'snippet'
             ]), true, 512, JSON_THROW_ON_ERROR);
 
+            if ($responseJson['pageInfo']['totalResults'] === 0) {
+                return self::getNotFoundResponse($videoId, $videoUrl);
+            }
+
             $videoProperties['title']       = $responseJson['items'][0]['snippet']['title'] ?? null;
             $videoProperties['description'] = $responseJson['items'][0]['snippet']['description'] ?? null;
             $videoProperties['tags']        = $responseJson['items'][0]['snippet']['tags'] ?? null;
@@ -89,6 +103,10 @@ class YoutubeProvider
 
         if (!$videoProperties) {
             $videoMetasExtracted = MetaSupport::extractMetasFromUrl($videoUrl);
+
+            if (!array_key_exists('title', $videoMetasExtracted)) {
+                return self::getNotFoundResponse($videoId, $videoUrl);
+            }
 
             $videoProperties['title']       = $videoMetasExtracted['title'];
             $videoProperties['description'] = $videoMetasExtracted['description'];
@@ -103,6 +121,7 @@ class YoutubeProvider
 
         return EmbedData::withAttributes(array_merge([
             'provider'   => 'youtube',
+            'found'      => true,
             'id'         => $videoId,
             'url'        => $videoUrl,
             'urlEmbed'   => 'https://youtube.com/embed/' . $videoId,

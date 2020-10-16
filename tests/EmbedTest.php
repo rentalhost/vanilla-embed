@@ -19,6 +19,7 @@ class EmbedTest
                 'https://youtube.com/watch?v=kJQP7kiw5Fk',
                 [
                     'provider' => 'youtube',
+                    'found'    => true,
                     'title'    => 'Luis Fonsi - Despacito ft. Daddy Yankee',
                     'url'      => 'https://youtu.be/kJQP7kiw5Fk',
                     'id'       => 'kJQP7kiw5Fk'
@@ -27,12 +28,27 @@ class EmbedTest
             [
                 // Recoverable non-normalized Url.
                 'youtube.com/watch?v=kJQP7kiw5Fk',
-                [ 'id' => 'kJQP7kiw5Fk' ]
+                [
+                    'provider' => 'youtube',
+                    'found'    => true,
+                    'id'       => 'kJQP7kiw5Fk'
+                ]
+            ],
+            [
+                'youtube.com/watch?v=aaaaaaaaaaa',
+                [
+                    'provider' => 'youtube',
+                    'found'    => false,
+                    'id'       => 'aaaaaaaaaaa',
+                    'url'      => 'https://youtu.be/aaaaaaaaaaa',
+                    'urlEmbed' => null
+                ]
             ],
             [
                 'https://vimeo.com/29950141',
                 [
                     'provider' => 'vimeo',
+                    'found'    => true,
                     'title'    => 'Landscapes: Volume Two',
                     'url'      => 'https://vimeo.com/29950141',
                     'urlEmbed' => 'https://player.vimeo.com/video/29950141?app_id=122963',
@@ -42,6 +58,8 @@ class EmbedTest
             [
                 'https://vimeo.com/344997253/ab1b6f2867',
                 [
+                    'provider' => 'vimeo',
+                    'found'    => true,
                     'title'    => 'CAP Roundtable 2019.06.26',
                     'url'      => 'https://vimeo.com/344997253/ab1b6f2867',
                     'urlEmbed' => 'https://player.vimeo.com/video/344997253?app_id=122963',
@@ -49,8 +67,30 @@ class EmbedTest
                 ]
             ],
             [
+                'https://vimeo.com/1',
+                [
+                    'provider' => 'vimeo',
+                    'found'    => false,
+                    'url'      => 'https://vimeo.com/1',
+                    'id'       => '1',
+                    'idKey'    => null
+                ]
+            ],
+            [
+                'https://vimeo.com/1/a',
+                [
+                    'provider' => 'vimeo',
+                    'found'    => false,
+                    'url'      => 'https://vimeo.com/1/a',
+                    'id'       => '1',
+                    'idKey'    => 'a'
+                ]
+            ],
+            [
                 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato-1',
                 [
+                    'provider'    => 'soundcloud',
+                    'found'       => true,
                     'title'       => 'Impact Moderato (Public)',
                     'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato-1',
                     'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898962922',
@@ -63,8 +103,23 @@ class EmbedTest
                 ]
             ],
             [
+                'https://soundcloud.com/a/b',
+                [
+                    'provider'    => 'soundcloud',
+                    'found'       => false,
+                    'url'         => 'https://soundcloud.com/a/b',
+                    'id'          => 'a/b',
+                    'trackId'     => null,
+                    'trackUser'   => 'a',
+                    'trackName'   => 'b',
+                    'trackSecret' => null
+                ]
+            ],
+            [
                 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
                 [
+                    'provider'    => 'soundcloud',
+                    'found'       => true,
                     'title'       => 'Impact Moderato (Unlisted)',
                     'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
                     'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
@@ -77,8 +132,23 @@ class EmbedTest
                 ]
             ],
             [
+                'https://soundcloud.com/a/b/c',
+                [
+                    'provider'    => 'soundcloud',
+                    'found'       => false,
+                    'url'         => 'https://soundcloud.com/a/b/c',
+                    'id'          => 'a/b',
+                    'trackId'     => null,
+                    'trackUser'   => 'a',
+                    'trackName'   => 'b',
+                    'trackSecret' => 'c'
+                ]
+            ],
+            [
                 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
                 [
+                    'provider'    => 'soundcloud',
+                    'found'       => true,
                     'title'       => 'Impact Moderato (Unlisted)',
                     'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
                     'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',

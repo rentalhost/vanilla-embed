@@ -8,6 +8,7 @@ use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
 use Rentalhost\Vanilla\Embed\Providers\EmbedData\VimeoEmbedData;
 use Rentalhost\Vanilla\Embed\Support\MetaSupport;
+use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 
 class VimeoProvider
     extends Provider
@@ -52,6 +53,18 @@ class VimeoProvider
         $videoUrl        = 'https://vimeo.com/' . $videoId . ($videoKey ? '/' . $videoKey : null);
         $videoThumbnails = [];
 
+        $videoContents = UrlSupport::getContents($videoUrl);
+
+        if (!$videoContents) {
+            return VimeoEmbedData::withAttributes([
+                'provider' => 'vimeo',
+                'found'    => false,
+                'id'       => $videoId,
+                'idKey'    => $videoKey,
+                'url'      => $videoUrl
+            ]);
+        }
+
         $videoMetasExtracted = MetaSupport::extractMetasFromUrl($videoUrl);
 
         $videoProperties['title']       = $videoMetasExtracted['og:title'];
@@ -70,6 +83,7 @@ class VimeoProvider
 
         return VimeoEmbedData::withAttributes(array_merge([
             'provider'   => 'vimeo',
+            'found'      => true,
             'id'         => $videoId,
             'idKey'      => $videoKey,
             'url'        => $videoUrl,

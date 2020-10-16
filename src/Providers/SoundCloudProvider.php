@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
-use GuzzleHttp\Exception\ClientException;
 use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
 use Rentalhost\Vanilla\Embed\Providers\EmbedData\SoundCloudEmbedData;
@@ -40,14 +39,11 @@ class SoundCloudProvider
         }
 
         if ($postNormalizedUrlHost === 'w.soundcloud.com') {
-            try {
-                $postNormalizedLinks = MetaSupport::extractLinksFromUrl($postNormalizedUrl);
-            }
-            catch (ClientException $exception) {
-                return null;
-            }
+            $postNormalizedLinks = MetaSupport::extractLinksFromUrl($postNormalizedUrl);
 
-            return self::extractTrackId(substr($postNormalizedLinks['canonical'], 8));
+            if ($postNormalizedLinks) {
+                return self::extractTrackId(substr($postNormalizedLinks['canonical'], 8));
+            }
         }
 
         return null;
@@ -75,7 +71,21 @@ class SoundCloudProvider
         $trackUrl        = 'https://soundcloud.com/' . $trackUser . '/' . $trackName . ($trackSecret ? '/' . $trackSecret : null);
         $trackThumbnails = [];
 
-        $trackUrlContents    = UrlSupport::getContents($trackUrl);
+        $trackUrlContents = UrlSupport::getContents($trackUrl);
+
+        if (!$trackUrlContents) {
+            return SoundCloudEmbedData::withAttributes([
+                'provider'    => 'soundcloud',
+                'found'       => false,
+                'id'          => $trackUser . '/' . $trackName,
+                'trackId'     => $trackId,
+                'trackUser'   => $trackUser,
+                'trackName'   => $trackName,
+                'trackSecret' => $trackSecret,
+                'url'         => $trackUrl
+            ]);
+        }
+
         $trackMetasExtracted = MetaSupport::extractMetas($trackUrlContents);
 
         if (preg_match('~soundcloud:tracks:(?<trackId>\d+)~', $trackUrlContents, $trackUrlContentsMatch)) {
@@ -99,6 +109,7 @@ class SoundCloudProvider
 
         return SoundCloudEmbedData::withAttributes(array_merge([
             'provider'    => 'soundcloud',
+            'found'       => true,
             'id'          => $trackUser . '/' . $trackName,
             'trackId'     => $trackId,
             'trackUser'   => $trackUser,

@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Rentalhost\Vanilla\Embed\Support;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
+use Rentalhost\Vanilla\Embed\Exceptions\InvalidClientKeyException;
 
 class UrlSupport
 {
@@ -12,7 +14,22 @@ class UrlSupport
     {
         parse_str((string) parse_url($url, PHP_URL_QUERY), $urlQuerystring);
 
-        return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
+        try {
+            return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
+        }
+        catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                return null;
+            }
+
+            if ($exception->getCode() === 400) {
+                $exceptionResponse = json_decode($exception->getResponse()->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+                throw new InvalidClientKeyException($exceptionResponse['error']['message'], 400, $exception);
+            }
+
+            throw $exception;
+        }
     }
 
     public static function getContents(string $url, ?array $querystring = null): ?string

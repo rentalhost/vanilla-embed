@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed\Tests\Providers;
 
-use GuzzleHttp\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
 use Rentalhost\Vanilla\Embed\Embed;
+use Rentalhost\Vanilla\Embed\Exceptions\InvalidClientKeyException;
 use Rentalhost\Vanilla\Embed\Providers\YoutubeProvider;
 
 class YoutubeProviderTest
@@ -53,17 +53,25 @@ class YoutubeProviderTest
         $embedData = Embed::create([ 'google.key' => $googleKey ])
             ->fromUrl('https://youtube.com/watch?v=kJQP7kiw5Fk');
 
+        static::assertTrue($embedData->found);
         static::assertSame('Luis Fonsi - Despacito ft. Daddy Yankee', $embedData->title);
         static::assertStringContainsString('Despacito', $embedData->description);
         static::assertContains('Despacito', $embedData->tags);
 
         static::assertStringEndsWith('/maxresdefault.jpg', $embedData->getThumbnail()->url);
+
+        $embedData = Embed::create([ 'google.key' => $googleKey ])
+            ->fromUrl('https://youtube.com/watch?v=aaaaaaaaaaa');
+
+        static::assertFalse($embedData->found);
+        static::assertNull($embedData->title);
+        static::assertSame('https://youtu.be/aaaaaaaaaaa', $embedData->url);
     }
 
     public function testWithInvalidGoogleKey(): void
     {
-        $this->expectException(ClientException::class);
-        $this->expectExceptionMessageMatches('~400 Bad Request~');
+        $this->expectException(InvalidClientKeyException::class);
+        $this->expectErrorMessage('API key not valid. Please pass a valid API key.');
 
         Embed::create([ 'google.key' => 'invalidKey' ])
             ->fromUrl('https://youtube.com/watch?v=kJQP7kiw5Fk');
