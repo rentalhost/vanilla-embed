@@ -120,7 +120,7 @@ class VimeoProvider
             'id'         => $videoId,
             'idKey'      => $videoKey,
             'url'        => $videoUrl,
-            'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId . '?app_id=122963',
+            'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId,
             'thumbnails' => $videoThumbnails
         ], $videoProperties));
     }
