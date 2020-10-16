@@ -52,6 +52,30 @@ class VimeoProviderTest
         static::assertNull($embedDataThumbnailSizedWithoutHeight->height);
     }
 
+    public function testInvalidJsonResponse(): void
+    {
+        $cachePath = getcwd() . '/tests/.cache/player.vimeo.com-2315fcfd3841c5992f27783310ad691e9bc3725b';
+
+        file_put_contents($cachePath, /** @lang text */ '<script> var config = invalid; if (!config.request) {} </script>');
+
+        $embedData = Embed::create()->fromUrl('https://player.vimeo.com/video/124');
+
+        static::assertFalse($embedData->found);
+        static::assertSame('124', $embedData->id);
+    }
+
+    public function testInvalidResponse(): void
+    {
+        $cachePath = getcwd() . '/tests/.cache/player.vimeo.com-9939f1806b9b85601c7857b57d4410f851dd1e0f';
+
+        file_put_contents($cachePath, 'invalid-response');
+
+        $embedData = Embed::create()->fromUrl('https://player.vimeo.com/video/123');
+
+        static::assertFalse($embedData->found);
+        static::assertSame('123', $embedData->id);
+    }
+
     /** @dataProvider dataProviderIsUrlCompatible */
     public function testIsUrlCompatible(string $url, bool $isValid): void
     {

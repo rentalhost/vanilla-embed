@@ -32,6 +32,34 @@ class VimeoProvider
         return null;
     }
 
+    private static function getFallbackContents(string $videoId, ?string &$videoKey): ?string
+    {
+        $videoUrl      = 'https://player.vimeo.com/video/' . $videoId;
+        $videoContents = UrlSupport::getContents($videoUrl);
+
+        if (!$videoContents) {
+            return null;
+        }
+
+        $videoMetasOffset = strpos($videoContents, 'var config = ') + 13;
+        $videoMetaSubstr  = substr($videoContents, $videoMetasOffset, strpos($videoContents, '; if (!config.request)') - $videoMetasOffset);
+
+        if (!$videoMetaSubstr) {
+            return null;
+        }
+
+        try {
+            $videoMetasExtracted = json_decode($videoMetaSubstr, true, 512, JSON_THROW_ON_ERROR);
+        }
+        catch (\JsonException $exception) {
+            return null;
+        }
+
+        $videoKey = $videoMetasExtracted['video']['unlisted_hash'];
+
+        return UrlSupport::getContents('https://vimeo.com/' . $videoId . '/' . $videoKey);
+    }
+
     private static function isValidId(?string $id): bool
     {
         if (!$id) {
@@ -56,6 +84,10 @@ class VimeoProvider
         $videoContents = UrlSupport::getContents($videoUrl);
 
         if (!$videoContents) {
+            $videoContents = self::getFallbackContents($videoId, $videoKey);
+        }
+
+        if (!$videoContents) {
             return VimeoEmbedData::withAttributes([
                 'provider' => 'vimeo',
                 'found'    => false,
@@ -65,11 +97,12 @@ class VimeoProvider
             ]);
         }
 
-        $videoMetasExtracted = MetaSupport::extractMetasFromUrl($videoUrl);
+        $videoMetasExtracted = MetaSupport::extractMetas($videoContents);
 
         $videoProperties['title']       = $videoMetasExtracted['og:title'];
         $videoProperties['description'] = $videoMetasExtracted['og:description'];
-        $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ?? [];
+        $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ??
+                                          (!empty($videoMetasExtracted['video:tag']) ? [ $videoMetasExtracted['video:tag'] ] : []);
 
         parse_str(parse_url($videoMetasExtracted['og:image'], PHP_URL_QUERY), $videoThumbnailQuerystring);
 
