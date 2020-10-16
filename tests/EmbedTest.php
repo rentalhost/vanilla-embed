@@ -82,6 +82,16 @@ class EmbedTest
                 ]
             ],
             [
+                // Private video.
+                'https://player.vimeo.com/video/460466076',
+                [
+                    'provider' => 'vimeo',
+                    'found'    => false,
+                    'url'      => 'https://vimeo.com/460466076',
+                    'id'       => '460466076'
+                ]
+            ],
+            [
                 'https://vimeo.com/1',
                 [
                     'provider' => 'vimeo',

@@ -18,7 +18,7 @@ class UrlSupport
             return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
         }
         catch (ClientException $exception) {
-            if ($exception->getCode() === 404) {
+            if (in_array($exception->getCode(), [ 404, 403 ], true)) {
                 return null;
             }
 

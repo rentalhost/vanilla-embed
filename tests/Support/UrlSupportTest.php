@@ -11,12 +11,12 @@ use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 class UrlSupportTest
     extends TestCase
 {
-    public function testError403(): void
+    public function testError402(): void
     {
         $this->expectException(ClientException::class);
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(402);
 
-        UrlSupport::getContents('https://postman-echo.com/status/403');
+        UrlSupport::getContents('https://postman-echo.com/status/402');
     }
 
     public function testError404(): void
