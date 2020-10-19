@@ -18,7 +18,7 @@ class UrlSupport
             return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
         }
         catch (ClientException $exception) {
-            if (in_array($exception->getCode(), [ 404, 403 ], true)) {
+            if (in_array($exception->getCode(), [ 404, 403, 429 ], true)) {
                 return null;
             }
 
@@ -42,7 +42,7 @@ class UrlSupport
             $urlCachePath = getcwd() . '/tests/.cache/' . $urlCacheKey;
 
             if (is_file($urlCachePath)) {
-                return file_get_contents($urlCachePath);
+                return file_get_contents($urlCachePath) ?: null;
             }
         }
 
@@ -52,6 +52,6 @@ class UrlSupport
             file_put_contents($urlCachePath, $contentsUncached);
         }
 
-        return $contentsUncached;
+        return $contentsUncached ?: null;
     }
 }

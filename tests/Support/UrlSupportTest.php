@@ -30,6 +30,11 @@ class UrlSupportTest
         static::assertNull(UrlSupport::getContents('https://postman-echo.com/status/404'));
     }
 
+    public function testError429(): void
+    {
+        static::assertNull(UrlSupport::getContents('https://postman-echo.com/status/429'));
+    }
+
     public function testExtractMetas(): void
     {
         $postmanCachePath = getcwd() . '/tests/.cache/postman-echo.com-9e120c81d39397f88f73b5444d6001ff08c895fc';
