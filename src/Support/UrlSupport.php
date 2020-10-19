@@ -10,12 +10,15 @@ use Rentalhost\Vanilla\Embed\Exceptions\InvalidClientKeyException;
 
 class UrlSupport
 {
-    private static function getContentsUncached(string $url, ?array $querystring): ?string
+    private static function getContentsUncached(string $url, ?array $querystring, ?array $headers = null): ?string
     {
         parse_str((string) parse_url($url, PHP_URL_QUERY), $urlQuerystring);
 
         try {
-            return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
+            return (new GuzzleClient)->get($url, [
+                'headers' => $headers ?? [],
+                'query'   => array_merge($urlQuerystring, $querystring ?? [])
+            ])->getBody()->getContents();
         }
         catch (ClientException $exception) {
             $exceptionCode = $exception->getCode();
@@ -24,24 +27,28 @@ class UrlSupport
                 return null;
             }
 
-            if ($exceptionCode === 400) {
+            if (in_array($exceptionCode, [ 400, 401 ], true)) {
                 $exceptionResponse = json_decode($exception->getResponse()->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
-                throw new InvalidClientKeyException($exceptionResponse['error']['message'], $exceptionCode, $exception);
+                throw new InvalidClientKeyException(
+                    $exceptionResponse['error']['message'] ?? $exceptionResponse['developer_message'],
+                    $exceptionCode,
+                    $exception
+                );
             }
 
             throw $exception;
         }
     }
 
-    public static function getCacheKey(string $url, ?array $querystring = null): string
+    public static function getCacheKey(string $url, ?array $querystring = null, ?array $headers = null): string
     {
         $urlHostname = parse_url($url, PHP_URL_HOST);
 
-        return $urlHostname . '-' . sha1($url . '@' . json_encode($querystring, JSON_THROW_ON_ERROR));
+        return $urlHostname . '-' . sha1($url . '@' . json_encode($querystring, JSON_THROW_ON_ERROR) . '@' . json_encode($headers, JSON_THROW_ON_ERROR));
     }
 
-    public static function getContents(string $url, ?array $querystring = null): ?string
+    public static function getContents(string $url, ?array $querystring = null, ?array $headers = null): ?string
     {
         $urlCacheEnabled = (bool) getenv('PHPUNIT_URL_CACHE_ENABLED');
 
@@ -54,7 +61,7 @@ class UrlSupport
             }
         }
 
-        $contentsUncached = self::getContentsUncached($url, $querystring);
+        $contentsUncached = self::getContentsUncached($url, $querystring, $headers);
 
         if ($urlCacheEnabled) {
             file_put_contents($urlCachePath, $contentsUncached);

@@ -78,40 +78,69 @@ class VimeoProvider
     {
         [ $videoId, $videoKey ] = array_pad(explode('/', self::extractVideoId($normalizedUrl), 2), 2, null);
 
-        $videoUrl        = 'https://vimeo.com/' . $videoId . ($videoKey ? '/' . $videoKey : null);
+        $vimeoAccessToken = $embed->getOption('vimeo.accessToken');
+
+        $videoProperties = [];
         $videoThumbnails = [];
 
-        $videoContents = UrlSupport::getContents($videoUrl);
-
-        if (!$videoContents) {
-            $videoContents = self::getFallbackContents($videoId, $videoKey);
-        }
-
-        if (!$videoContents) {
-            return VimeoEmbedData::withAttributes([
-                'provider' => 'vimeo',
-                'found'    => false,
-                'id'       => $videoId,
-                'idKey'    => $videoKey,
-                'url'      => $videoUrl
+        if ($vimeoAccessToken) {
+            $videoUrlContents = UrlSupport::getContents('https://api.vimeo.com/videos/' . $videoId, null, [
+                'Authorization' => 'bearer ' . $vimeoAccessToken
             ]);
+
+            if ($videoUrlContents) {
+                $responseJson = json_decode($videoUrlContents, true, 512, JSON_THROW_ON_ERROR);
+
+                if (!array_key_exists('error', $responseJson)) {
+                    $videoUrl = $responseJson['link'];
+
+                    $videoProperties['title']       = $responseJson['name'] ?? null;
+                    $videoProperties['description'] = $responseJson['description'] ?? null;
+                    $videoProperties['tags']        = $responseJson['tags'] ?? null;
+
+                    $videoThumbnails['default'] = [
+                        'url'    => substr($responseJson['pictures']['sizes'][0]['link'], 0, -6),
+                        'width'  => (int) $responseJson['pictures']['sizes'][0]['width'],
+                        'height' => (int) $responseJson['pictures']['sizes'][0]['height']
+                    ];
+                }
+            }
         }
 
-        $videoMetasExtracted = MetaSupport::extractMetas($videoContents);
+        if (!$videoProperties) {
+            $videoUrl      = 'https://vimeo.com/' . $videoId . ($videoKey ? '/' . $videoKey : null);
+            $videoContents = UrlSupport::getContents($videoUrl);
 
-        $videoProperties['title']       = $videoMetasExtracted['og:title'];
-        $videoProperties['description'] = $videoMetasExtracted['og:description'];
-        $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ??
-                                          (!empty($videoMetasExtracted['video:tag']) ? [ $videoMetasExtracted['video:tag'] ] : []);
+            if (!$videoContents) {
+                $videoContents = self::getFallbackContents($videoId, $videoKey);
+            }
 
-        parse_str(parse_url($videoMetasExtracted['og:image'], PHP_URL_QUERY), $videoThumbnailQuerystring);
+            if (!$videoContents) {
+                return VimeoEmbedData::withAttributes([
+                    'provider' => 'vimeo',
+                    'found'    => false,
+                    'id'       => $videoId,
+                    'idKey'    => $videoKey,
+                    'url'      => $videoUrl
+                ]);
+            }
 
-        if (preg_match('~(?<width>\d+)x(?<height>\d+)~', $videoThumbnailQuerystring['src0'] ?? '', $videoThumbnailMatch)) {
-            $videoThumbnails['default'] = [
-                'url'    => $videoThumbnailQuerystring['src0'],
-                'width'  => (int) $videoThumbnailMatch['width'],
-                'height' => (int) $videoThumbnailMatch['height']
-            ];
+            $videoMetasExtracted = MetaSupport::extractMetas($videoContents);
+
+            $videoProperties['title']       = $videoMetasExtracted['og:title'];
+            $videoProperties['description'] = $videoMetasExtracted['og:description'];
+            $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ??
+                                              (!empty($videoMetasExtracted['video:tag']) ? [ $videoMetasExtracted['video:tag'] ] : []);
+
+            parse_str(parse_url($videoMetasExtracted['og:image'], PHP_URL_QUERY), $videoThumbnailQuerystring);
+
+            if (preg_match('~(?<width>\d+)x(?<height>\d+)~', $videoThumbnailQuerystring['src0'] ?? '', $videoThumbnailMatch)) {
+                $videoThumbnails['default'] = [
+                    'url'    => $videoThumbnailQuerystring['src0'],
+                    'width'  => (int) $videoThumbnailMatch['width'],
+                    'height' => (int) $videoThumbnailMatch['height']
+                ];
+            }
         }
 
         return VimeoEmbedData::withAttributes(array_merge([
