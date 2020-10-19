@@ -18,18 +18,27 @@ class UrlSupport
             return (new GuzzleClient)->get($url, [ 'query' => array_merge($urlQuerystring, $querystring ?? []) ])->getBody()->getContents();
         }
         catch (ClientException $exception) {
-            if (in_array($exception->getCode(), [ 404, 403, 429 ], true)) {
+            $exceptionCode = $exception->getCode();
+
+            if (in_array($exceptionCode, [ 404, 403, 429 ], true)) {
                 return null;
             }
 
-            if ($exception->getCode() === 400) {
+            if ($exceptionCode === 400) {
                 $exceptionResponse = json_decode($exception->getResponse()->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
-                throw new InvalidClientKeyException($exceptionResponse['error']['message'], 400, $exception);
+                throw new InvalidClientKeyException($exceptionResponse['error']['message'], $exceptionCode, $exception);
             }
 
             throw $exception;
         }
+    }
+
+    public static function getCacheKey(string $url, ?array $querystring = null): string
+    {
+        $urlHostname = parse_url($url, PHP_URL_HOST);
+
+        return $urlHostname . '-' . sha1($url . '@' . json_encode($querystring, JSON_THROW_ON_ERROR));
     }
 
     public static function getContents(string $url, ?array $querystring = null): ?string
@@ -37,8 +46,7 @@ class UrlSupport
         $urlCacheEnabled = (bool) getenv('PHPUNIT_URL_CACHE_ENABLED');
 
         if ($urlCacheEnabled) {
-            $urlHostname  = parse_url($url, PHP_URL_HOST);
-            $urlCacheKey  = $urlHostname . '-' . sha1($url . '@' . json_encode($querystring, JSON_THROW_ON_ERROR));
+            $urlCacheKey  = self::getCacheKey($url, $querystring, $headers);
             $urlCachePath = getcwd() . '/tests/.cache/' . $urlCacheKey;
 
             if (is_file($urlCachePath)) {

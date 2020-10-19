@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\Providers\EmbedData\VimeoEmbedData;
 use Rentalhost\Vanilla\Embed\Providers\VimeoProvider;
+use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 
 class VimeoProviderTest
     extends TestCase
@@ -54,7 +55,7 @@ class VimeoProviderTest
 
     public function testInvalidJsonResponse(): void
     {
-        $cachePath = getcwd() . '/tests/.cache/player.vimeo.com-2315fcfd3841c5992f27783310ad691e9bc3725b';
+        $cachePath = getcwd() . '/tests/.cache/' . UrlSupport::getCacheKey('https://player.vimeo.com/video/124');
 
         file_put_contents($cachePath, /** @lang text */ '<script> var config = invalid; if (!config.request) {} </script>');
 
@@ -66,7 +67,7 @@ class VimeoProviderTest
 
     public function testInvalidResponse(): void
     {
-        $cachePath = getcwd() . '/tests/.cache/player.vimeo.com-9939f1806b9b85601c7857b57d4410f851dd1e0f';
+        $cachePath = getcwd() . '/tests/.cache/' . UrlSupport::getCacheKey('https://player.vimeo.com/video/123');
 
         file_put_contents($cachePath, 'invalid-response');
 
