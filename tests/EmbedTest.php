@@ -35,6 +35,14 @@ class EmbedTest
                 ]
             ],
             [
+                'https://youtu.be/I2MxhO05PyQ',
+                [
+                    'provider' => 'youtube',
+                    'found'    => true,
+                    'tags'     => []
+                ]
+            ],
+            [
                 'youtube.com/watch?v=aaaaaaaaaaa',
                 [
                     'provider' => 'youtube',

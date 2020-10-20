@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2020-10-20
+
+### Fixed
+
+- `YoutubeProvider` fix on reading a video with empty tags;
+
 ## [0.1.4] - 2020-10-19
 
 ### Added
@@ -42,6 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Initial version, supporting Youtube, Vimeo and Soundcloud;
 - `YoutubeProvider` have support to `google.key` option to use Google API directly;
+
+[0.1.5]: https://github.com/rentalhost/vanilla-embed/compare/0.1.4..0.1.5
 
 [0.1.4]: https://github.com/rentalhost/vanilla-embed/compare/0.1.3..0.1.4
 

@@ -110,7 +110,7 @@ class YoutubeProvider
 
             $videoProperties['title']       = $videoMetasExtracted['title'];
             $videoProperties['description'] = $videoMetasExtracted['description'];
-            $videoProperties['tags']        = $videoMetasExtracted['og:video:tag:array'];
+            $videoProperties['tags']        = $videoMetasExtracted['og:video:tag:array'] ?? [];
 
             $videoThumbnails = [
                 'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
