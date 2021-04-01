@@ -85,7 +85,7 @@ class VimeoProvider
 
         if ($vimeoAccessToken) {
             $videoUrlContents = UrlSupport::getContents('https://api.vimeo.com/videos/' . $videoId, null, [
-                'Authorization' => 'bearer ' . $vimeoAccessToken
+                'Authorization' => 'bearer ' . $vimeoAccessToken,
             ]);
 
             if ($videoUrlContents) {
@@ -101,7 +101,7 @@ class VimeoProvider
                     $videoThumbnails['default'] = [
                         'url'    => substr($responseJson['pictures']['sizes'][0]['link'], 0, -6),
                         'width'  => (int) $responseJson['pictures']['sizes'][0]['width'],
-                        'height' => (int) $responseJson['pictures']['sizes'][0]['height']
+                        'height' => (int) $responseJson['pictures']['sizes'][0]['height'],
                     ];
                 }
             }
@@ -121,7 +121,7 @@ class VimeoProvider
                     'found'    => false,
                     'id'       => $videoId,
                     'idKey'    => $videoKey,
-                    'url'      => $videoUrl
+                    'url'      => $videoUrl,
                 ]);
             }
 
@@ -138,7 +138,7 @@ class VimeoProvider
                 $videoThumbnails['default'] = [
                     'url'    => $videoThumbnailQuerystring['src0'],
                     'width'  => (int) $videoThumbnailMatch['width'],
-                    'height' => (int) $videoThumbnailMatch['height']
+                    'height' => (int) $videoThumbnailMatch['height'],
                 ];
             }
         }
@@ -148,9 +148,9 @@ class VimeoProvider
             'found'      => true,
             'id'         => $videoId,
             'idKey'      => $videoKey,
-            'url'        => $videoUrl,
+            'url'        => $videoUrl ?? null,
             'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId,
-            'thumbnails' => $videoThumbnails
+            'thumbnails' => $videoThumbnails,
         ], $videoProperties));
     }
 }

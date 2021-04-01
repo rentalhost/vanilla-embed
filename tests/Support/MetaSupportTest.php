@@ -18,7 +18,7 @@ class MetaSupportTest
             'metaProperty'    => 'ok',
             'metaDuplicated'  => 'ok',
             'metaArray'       => 'okLastItem',
-            'metaArray:array' => [ 'okFirstItem', 'okLastItem' ]
+            'metaArray:array' => [ 'okFirstItem', 'okLastItem' ],
         ], MetaSupport::extractMetas(
             '<meta name="metaName" content="ok" />' .
             '<meta itemprop="metaItemprop" content="ok" />' .

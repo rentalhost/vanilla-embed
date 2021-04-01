@@ -22,8 +22,8 @@ class EmbedTest
                     'found'    => true,
                     'title'    => 'Luis Fonsi - Despacito ft. Daddy Yankee',
                     'url'      => 'https://youtu.be/kJQP7kiw5Fk',
-                    'id'       => 'kJQP7kiw5Fk'
-                ]
+                    'id'       => 'kJQP7kiw5Fk',
+                ],
             ],
             [
                 // Recoverable non-normalized Url.
@@ -31,16 +31,16 @@ class EmbedTest
                 [
                     'provider' => 'youtube',
                     'found'    => true,
-                    'id'       => 'kJQP7kiw5Fk'
-                ]
+                    'id'       => 'kJQP7kiw5Fk',
+                ],
             ],
             [
                 'https://youtu.be/I2MxhO05PyQ',
                 [
                     'provider' => 'youtube',
                     'found'    => true,
-                    'tags'     => []
-                ]
+                    'tags'     => [],
+                ],
             ],
             [
                 'youtube.com/watch?v=aaaaaaaaaaa',
@@ -49,8 +49,8 @@ class EmbedTest
                     'found'    => false,
                     'id'       => 'aaaaaaaaaaa',
                     'url'      => 'https://youtu.be/aaaaaaaaaaa',
-                    'urlEmbed' => null
-                ]
+                    'urlEmbed' => null,
+                ],
             ],
             [
                 'https://vimeo.com/29950141',
@@ -60,8 +60,8 @@ class EmbedTest
                     'title'    => 'Landscapes: Volume Two',
                     'url'      => 'https://vimeo.com/29950141',
                     'urlEmbed' => 'https://player.vimeo.com/video/29950141',
-                    'id'       => '29950141'
-                ]
+                    'id'       => '29950141',
+                ],
             ],
             [
                 'https://vimeo.com/344997253/ab1b6f2867',
@@ -73,8 +73,8 @@ class EmbedTest
                     'tags'        => [ 'CAP Roundtable' ],
                     'url'         => 'https://vimeo.com/344997253/ab1b6f2867',
                     'urlEmbed'    => 'https://player.vimeo.com/video/344997253',
-                    'id'          => '344997253'
-                ]
+                    'id'          => '344997253',
+                ],
             ],
             [
                 'https://player.vimeo.com/video/344997253',
@@ -86,8 +86,8 @@ class EmbedTest
                     'tags'        => [ 'CAP Roundtable' ],
                     'url'         => 'https://vimeo.com/344997253',
                     'urlEmbed'    => 'https://player.vimeo.com/video/344997253',
-                    'id'          => '344997253'
-                ]
+                    'id'          => '344997253',
+                ],
             ],
             [
                 // Private video.
@@ -96,8 +96,8 @@ class EmbedTest
                     'provider' => 'vimeo',
                     'found'    => false,
                     'url'      => 'https://vimeo.com/460466076',
-                    'id'       => '460466076'
-                ]
+                    'id'       => '460466076',
+                ],
             ],
             [
                 'https://vimeo.com/1',
@@ -106,8 +106,8 @@ class EmbedTest
                     'found'    => false,
                     'url'      => 'https://vimeo.com/1',
                     'id'       => '1',
-                    'idKey'    => null
-                ]
+                    'idKey'    => null,
+                ],
             ],
             [
                 'https://vimeo.com/1/a',
@@ -116,8 +116,8 @@ class EmbedTest
                     'found'    => false,
                     'url'      => 'https://vimeo.com/1/a',
                     'id'       => '1',
-                    'idKey'    => 'a'
-                ]
+                    'idKey'    => 'a',
+                ],
             ],
             [
                 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato-1',
@@ -132,8 +132,8 @@ class EmbedTest
                     'trackId'     => 898962922,
                     'trackUser'   => 'david-rodrigues-277280782',
                     'trackName'   => 'impact-moderato-1',
-                    'trackSecret' => null
-                ]
+                    'trackSecret' => null,
+                ],
             ],
             [
                 'https://soundcloud.com/a/b',
@@ -145,8 +145,8 @@ class EmbedTest
                     'trackId'     => null,
                     'trackUser'   => 'a',
                     'trackName'   => 'b',
-                    'trackSecret' => null
-                ]
+                    'trackSecret' => null,
+                ],
             ],
             [
                 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
@@ -161,8 +161,8 @@ class EmbedTest
                     'trackId'     => 898937494,
                     'trackUser'   => 'david-rodrigues-277280782',
                     'trackName'   => 'impact-moderato',
-                    'trackSecret' => 's-MjcQ5BtcRPp'
-                ]
+                    'trackSecret' => 's-MjcQ5BtcRPp',
+                ],
             ],
             [
                 'https://soundcloud.com/a/b/c',
@@ -174,8 +174,8 @@ class EmbedTest
                     'trackId'     => null,
                     'trackUser'   => 'a',
                     'trackName'   => 'b',
-                    'trackSecret' => 'c'
-                ]
+                    'trackSecret' => 'c',
+                ],
             ],
             [
                 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
@@ -189,9 +189,9 @@ class EmbedTest
                     'trackId'     => 898937494,
                     'trackUser'   => 'david-rodrigues-277280782',
                     'trackName'   => 'impact-moderato',
-                    'trackSecret' => 's-MjcQ5BtcRPp'
-                ]
-            ]
+                    'trackSecret' => 's-MjcQ5BtcRPp',
+                ],
+            ],
         ];
     }
 

@@ -17,7 +17,7 @@ class UrlSupport
         try {
             return (new GuzzleClient)->get($url, [
                 'headers' => $headers ?? [],
-                'query'   => array_merge($urlQuerystring, $querystring ?? [])
+                'query'   => array_merge($urlQuerystring, $querystring ?? []),
             ])->getBody()->getContents();
         }
         catch (ClientException $exception) {

@@ -50,7 +50,7 @@ class YoutubeProvider
             'provider' => 'youtube',
             'found'    => false,
             'id'       => $videoId,
-            'url'      => $videoUrl
+            'url'      => $videoUrl,
         ]);
     }
 
@@ -65,7 +65,7 @@ class YoutubeProvider
 
     private static function postNormalizeUrl(string $normalizedUrl): string
     {
-        return preg_replace('~^m\.~', null, $normalizedUrl);
+        return preg_replace('~^m\.~', '', $normalizedUrl);
     }
 
     public static function isUrlCompatible(string $normalizedUrl): bool
@@ -87,7 +87,7 @@ class YoutubeProvider
             $responseJson = json_decode(UrlSupport::getContents('https://www.googleapis.com/youtube/v3/videos', [
                 'key'  => $googleKey,
                 'id'   => $videoId,
-                'part' => 'snippet'
+                'part' => 'snippet',
             ]), true, 512, JSON_THROW_ON_ERROR);
 
             if ($responseJson['pageInfo']['totalResults'] === 0) {
@@ -115,7 +115,7 @@ class YoutubeProvider
             $videoThumbnails = [
                 'default' => [ 'url' => $videoThumbnailBase . '/default.jpg', 'width' => 120, 'height' => 90 ],
                 'medium'  => [ 'url' => $videoThumbnailBase . '/mqdefault.jpg', 'width' => 320, 'height' => 180 ],
-                'high'    => [ 'url' => $videoThumbnailBase . '/hqdefault.jpg', 'width' => 480, 'height' => 360 ]
+                'high'    => [ 'url' => $videoThumbnailBase . '/hqdefault.jpg', 'width' => 480, 'height' => 360 ],
             ];
         }
 
@@ -125,7 +125,7 @@ class YoutubeProvider
             'id'         => $videoId,
             'url'        => $videoUrl,
             'urlEmbed'   => 'https://youtube.com/embed/' . $videoId,
-            'thumbnails' => $videoThumbnails
+            'thumbnails' => $videoThumbnails,
         ], $videoProperties))->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
     }
 }

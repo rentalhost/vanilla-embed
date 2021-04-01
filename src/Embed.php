@@ -16,7 +16,7 @@ class Embed
     private const EMBED_PROVIDERS = [
         YoutubeProvider::class,
         VimeoProvider::class,
-        SoundCloudProvider::class
+        SoundCloudProvider::class,
     ];
 
     private array $options;

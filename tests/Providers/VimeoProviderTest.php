@@ -26,7 +26,7 @@ class VimeoProviderTest
             [ 'vimeo.com/29950141invalid', false ],
 
             // Invalid Provider URLs.
-            [ 'invalid.vimeo.com/29950141', false ]
+            [ 'invalid.vimeo.com/29950141', false ],
         ];
     }
 

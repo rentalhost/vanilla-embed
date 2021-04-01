@@ -18,7 +18,7 @@ class VimeoEmbedData
         $thumbnailUrl = $this->attributes['thumbnails']['default']['url'];
 
         if (!$height) {
-            return ThumbnailData::create(preg_replace('~\d+x\d+~', $width, $thumbnailUrl), $width, null);
+            return ThumbnailData::create(preg_replace('~\d+x\d+~', (string) $width, $thumbnailUrl), $width, null);
         }
 
         return ThumbnailData::create(preg_replace('~\d+x\d+~', $width . 'x' . $height, $thumbnailUrl), $width, $height);

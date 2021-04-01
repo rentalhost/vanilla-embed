@@ -22,7 +22,7 @@ class SoundCloudProvider
         'badge'    => 47,
         'small'    => 32,
         'tiny'     => 18,
-        'mini'     => 16
+        'mini'     => 16,
     ];
 
     private static function extractTrackId(string $normalizedUrl): ?string
@@ -82,7 +82,7 @@ class SoundCloudProvider
                 'trackUser'   => $trackUser,
                 'trackName'   => $trackName,
                 'trackSecret' => $trackSecret,
-                'url'         => $trackUrl
+                'url'         => $trackUrl,
             ]);
         }
 
@@ -103,7 +103,7 @@ class SoundCloudProvider
             $trackThumbnails[$thumbnailName] = [
                 'url'    => preg_replace('~(-)t500x500(\.)~', '$1' . $thumbnailName . '$2', $trackMetasExtracted['og:image']),
                 'width'  => $thumbnailSize,
-                'height' => $thumbnailSize
+                'height' => $thumbnailSize,
             ];
         }
 
@@ -118,7 +118,7 @@ class SoundCloudProvider
             'url'         => $trackUrl,
             'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' . $trackId .
                              ($trackSecret ? urlencode('?secret_token=' . $trackSecret) : null),
-            'thumbnails'  => $trackThumbnails
+            'thumbnails'  => $trackThumbnails,
         ], $trackProperties))->setPreferredThumbnailOrder([ 't500x500' ]);
     }
 }

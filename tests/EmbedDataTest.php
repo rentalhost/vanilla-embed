@@ -45,6 +45,7 @@ class EmbedDataTest
     {
         $embedData = EmbedData::withAttributes([ 'urlEmbed' => 'https://www.youtube.com/embed/kJQP7kiw5Fk' ]);
 
+        /** @noinspection HtmlDeprecatedAttribute */
         static::assertSame('<iframe src="https://www.youtube.com/embed/kJQP7kiw5Fk?loop=1" frameborder="0" width="100%" data-custom="&quot;"></iframe>', $embedData->getHtml(
             [ 'loop' => 1 ],
             [ 'width' => '100%', 'data-custom' => '"' ]
@@ -65,7 +66,9 @@ class EmbedDataTest
         $this->expectExceptionMessage('EmbedData is readonly');
 
         /** @var \stdClass|EmbedData $embedData */
-        $embedData           = EmbedData::withAttributes([]);
+        $embedData = EmbedData::withAttributes([]);
+
+        /** @noinspection PhpUndefinedFieldInspection */
         $embedData->readonly = 'invalid';
     }
 }
