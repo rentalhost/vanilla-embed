@@ -104,7 +104,7 @@ class YoutubeProvider
         if (!$videoProperties) {
             $videoMetasExtracted = MetaSupport::extractMetasFromUrl($videoUrl);
 
-            if (!array_key_exists('title', $videoMetasExtracted)) {
+            if (empty($videoMetasExtracted['title'])) {
                 return self::getNotFoundResponse($videoId, $videoUrl);
             }
 
