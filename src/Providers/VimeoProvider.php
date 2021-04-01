@@ -127,6 +127,16 @@ class VimeoProvider
 
             $videoMetasExtracted = MetaSupport::extractMetas($videoContents);
 
+            if (empty($videoMetasExtracted['og:title'])) {
+                return VimeoEmbedData::withAttributes([
+                    'provider' => 'vimeo',
+                    'found'    => false,
+                    'id'       => $videoId,
+                    'idKey'    => $videoKey,
+                    'url'      => $videoUrl,
+                ]);
+            }
+
             $videoProperties['title']       = $videoMetasExtracted['og:title'];
             $videoProperties['description'] = $videoMetasExtracted['og:description'];
             $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ??
