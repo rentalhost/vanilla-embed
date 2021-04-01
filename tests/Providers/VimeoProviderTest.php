@@ -33,23 +33,23 @@ class VimeoProviderTest
     public function testEmbedDataGetThumbnail(): void
     {
         /** @var VimeoEmbedData $embedData */
-        $embedData          = Embed::create()->fromUrl('https://vimeo.com/344997253/ab1b6f2867');
+        $embedData          = Embed::create()->fromUrl('https://vimeo.com/273356233/83d37231b0');
         $embedDataThumbnail = $embedData->getThumbnail();
 
-        static::assertStringEndsWith('/811379236_1280x656.jpg', $embedDataThumbnail->url);
+        static::assertStringEndsWith('/705132911_1280x720.jpg', $embedDataThumbnail->url);
         static::assertSame(1280, $embedDataThumbnail->width);
-        static::assertSame(656, $embedDataThumbnail->height);
-        static::assertSame('ab1b6f2867', $embedData->idKey);
+        static::assertSame(720, $embedDataThumbnail->height);
+        static::assertSame('83d37231b0', $embedData->idKey);
 
         $embedDataThumbnailSized = $embedData->getThumbnailSized(640, 480);
 
-        static::assertStringEndsWith('/811379236_640x480.jpg', $embedDataThumbnailSized->url);
+        static::assertStringEndsWith('/705132911_640x480.jpg', $embedDataThumbnailSized->url);
         static::assertSame(640, $embedDataThumbnailSized->width);
         static::assertSame(480, $embedDataThumbnailSized->height);
 
         $embedDataThumbnailSizedWithoutHeight = $embedData->getThumbnailSized(640);
 
-        static::assertStringEndsWith('/811379236_640.jpg', $embedDataThumbnailSizedWithoutHeight->url);
+        static::assertStringEndsWith('/705132911_640.jpg', $embedDataThumbnailSizedWithoutHeight->url);
         static::assertSame(640, $embedDataThumbnailSizedWithoutHeight->width);
         static::assertNull($embedDataThumbnailSizedWithoutHeight->height);
     }
@@ -114,17 +114,17 @@ class VimeoProviderTest
         static::assertStringEndsWith('/961795826_100x75.jpg', $embedDataThumbnail->url);
 
         $embedData = Embed::create([ 'vimeo.accessToken' => $vimeoAccessToken ])
-            ->fromUrl('https://vimeo.com/344997253/ab1b6f2867');
+            ->fromUrl('https://vimeo.com/273356233/83d37231b0');
 
         static::assertTrue($embedData->found);
-        static::assertSame('CAP Roundtable 2019.06.26', $embedData->title);
-        static::assertStringContainsString('CAP Roundtable 06/26/2019', $embedData->description);
-        static::assertContains('CAP Roundtable', $embedData->tags);
-        static::assertSame('https://vimeo.com/344997253/ab1b6f2867', $embedData->url);
+        static::assertSame('Commencement Address 2018: David Sedaris', $embedData->title);
+        static::assertStringContainsString('David Sedaris delivers the commencement address at Oberlin College on  Monday, May 28, 2018.', $embedData->description);
+        static::assertIsArray($embedData->tags);
+        static::assertSame('https://vimeo.com/273356233', $embedData->url);
 
         $embedDataThumbnail = $embedData->getThumbnail();
 
-        static::assertStringEndsWith('/811379236_1280x656.jpg', $embedDataThumbnail->url);
+        static::assertStringEndsWith('/705132911_100x75.jpg', $embedDataThumbnail->url);
 
         $embedData = Embed::create([ 'vimeo.accessToken' => $vimeoAccessToken ])
             ->fromUrl('https://player.vimeo.com/video/1');
