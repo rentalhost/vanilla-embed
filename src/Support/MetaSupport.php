@@ -25,6 +25,10 @@ class MetaSupport
             }
 
             if ($nodeName) {
+                if (!array_key_exists($nodeName, $crawlerMetas)) {
+                    $crawlerMetas[$nodeName] = [];
+                }
+
                 $crawlerMetas[$nodeName][] = $node->attr($metaContent);
             }
         });
