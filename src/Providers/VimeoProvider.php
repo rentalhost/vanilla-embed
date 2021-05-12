@@ -69,6 +69,13 @@ class VimeoProvider
         return (bool) preg_match('~^\d+(?:/[0-9a-f]+)?$~', $id);
     }
 
+    private static function normalizeUrl(string $url): string
+    {
+        return preg_match('~\.jpg$~', $url)
+            ? $url
+            : $url . '.jpg';
+    }
+
     public static function isUrlCompatible(string $normalizedUrl): bool
     {
         return self::isValidId(self::extractVideoId($normalizedUrl));
@@ -99,7 +106,7 @@ class VimeoProvider
                     $videoProperties['tags']        = $responseJson['tags'] ?? null;
 
                     $videoThumbnails['default'] = [
-                        'url'    => substr($responseJson['pictures']['sizes'][0]['link'], 0, -6),
+                        'url'    => self::normalizeUrl(substr($responseJson['pictures']['sizes'][0]['link'], 0, -6)),
                         'width'  => (int) $responseJson['pictures']['sizes'][0]['width'],
                         'height' => (int) $responseJson['pictures']['sizes'][0]['height'],
                     ];
@@ -146,7 +153,7 @@ class VimeoProvider
 
             if (preg_match('~(?<width>\d+)x(?<height>\d+)~', $videoThumbnailQuerystring['src0'] ?? '', $videoThumbnailMatch)) {
                 $videoThumbnails['default'] = [
-                    'url'    => $videoThumbnailQuerystring['src0'],
+                    'url'    => self::normalizeUrl($videoThumbnailQuerystring['src0']),
                     'width'  => (int) $videoThumbnailMatch['width'],
                     'height' => (int) $videoThumbnailMatch['height'],
                 ];

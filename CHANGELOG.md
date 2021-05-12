@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2021-05-12
+
+### Added
+
+- `VimeoProvider` will appends `.jpg` automatically to thumbnails, since *vimeo.com* can now return the extension occasionally, and not always;
+
 ## [0.1.6] - 2021-04-01
 
 ### Fixed
@@ -54,6 +60,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Initial version, supporting Youtube, Vimeo and Soundcloud;
 - `YoutubeProvider` have support to `google.key` option to use Google API directly;
+
+[0.1.7]: https://github.com/rentalhost/vanilla-embed/compare/0.1.6..0.1.7
 
 [0.1.6]: https://github.com/rentalhost/vanilla-embed/compare/0.1.5..0.1.6
 
