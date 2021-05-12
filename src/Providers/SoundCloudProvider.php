@@ -55,7 +55,7 @@ class SoundCloudProvider
             return false;
         }
 
-        return (bool) preg_match('~^(?:[^/]+)(?:/[^/]+)(?:/[^/]+)?~', $id);
+        return (bool) preg_match('~^[^/]+/[^/]+(/[^/]+)?~', $id);
     }
 
     public static function isUrlCompatible(string $normalizedUrl): bool
