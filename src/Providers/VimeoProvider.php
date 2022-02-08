@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
+use JsonException;
 use Rentalhost\Vanilla\Embed\Embed;
 use Rentalhost\Vanilla\Embed\EmbedData;
 use Rentalhost\Vanilla\Embed\Providers\EmbedData\VimeoEmbedData;
@@ -25,7 +26,7 @@ class VimeoProvider
 
         $postNormalizedUrlPath = parse_url($postNormalizedUrl, PHP_URL_PATH);
 
-        if (preg_match('~^(?:/video)?/(?<id>\d+)(?<key>/[0-9a-f]+)?(?:/|$)~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
+        if (preg_match('~^(?:/video)?/(?<id>\d+)(?<key>/[\da-f]+)?(?:/|$)~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
             return $postNormalizedUrlPathMatch['id'] . ($postNormalizedUrlPathMatch['key'] ?? null);
         }
 
@@ -51,7 +52,7 @@ class VimeoProvider
         try {
             $videoMetasExtracted = json_decode($videoMetaSubstr, true, 512, JSON_THROW_ON_ERROR);
         }
-        catch (\JsonException $exception) {
+        catch (JsonException) {
             return null;
         }
 
@@ -66,7 +67,7 @@ class VimeoProvider
             return false;
         }
 
-        return (bool) preg_match('~^\d+(?:/[0-9a-f]+)?$~', $id);
+        return (bool) preg_match('~^\d+(?:/[\da-f]+)?$~', $id);
     }
 
     private static function normalizeUrl(string $url): string
