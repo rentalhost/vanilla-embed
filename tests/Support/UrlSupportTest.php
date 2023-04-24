@@ -43,6 +43,6 @@ class UrlSupportTest
             unlink($postmanCachePath);
         }
 
-        static::assertSame('{"status":200}', UrlSupport::getContents('https://postman-echo.com/status/200'));
+        static::assertSame("{\n  \"status\": 200\n}", UrlSupport::getContents('https://postman-echo.com/status/200'));
     }
 }
