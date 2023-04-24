@@ -150,14 +150,28 @@ class VimeoProvider
             $videoProperties['tags']        = $videoMetasExtracted['video:tag:array'] ??
                                               (!empty($videoMetasExtracted['video:tag']) ? [ $videoMetasExtracted['video:tag'] ] : []);
 
-            parse_str(parse_url($videoMetasExtracted['og:image'], PHP_URL_QUERY), $videoThumbnailQuerystring);
+            $videoImage = parse_url($videoMetasExtracted['og:image'], PHP_URL_QUERY);
 
-            if (preg_match('~(?<width>\d+)x(?<height>\d+)~', $videoThumbnailQuerystring['src0'] ?? '', $videoThumbnailMatch)) {
+            if ($videoImage === null) {
                 $videoThumbnails['default'] = [
-                    'url'    => self::normalizeUrl($videoThumbnailQuerystring['src0']),
-                    'width'  => (int) $videoThumbnailMatch['width'],
-                    'height' => (int) $videoThumbnailMatch['height'],
+                    'url'    => self::normalizeUrl(sprintf('%s_%sx%s',
+                        $videoMetasExtracted['og:image'],
+                        $videoMetasExtracted['og:image:width'],
+                        $videoMetasExtracted['og:image:height'])),
+                    'width'  => (int) $videoMetasExtracted['og:image:width'],
+                    'height' => (int) $videoMetasExtracted['og:image:height'],
                 ];
+            }
+            else {
+                parse_str($videoImage, $videoThumbnailQuerystring);
+
+                if (preg_match('~(?<width>\d+)x(?<height>\d+)~', $videoThumbnailQuerystring['src0'] ?? '', $videoThumbnailMatch)) {
+                    $videoThumbnails['default'] = [
+                        'url'    => self::normalizeUrl($videoThumbnailQuerystring['src0']),
+                        'width'  => (int) $videoThumbnailMatch['width'],
+                        'height' => (int) $videoThumbnailMatch['height'],
+                    ];
+                }
             }
         }
 

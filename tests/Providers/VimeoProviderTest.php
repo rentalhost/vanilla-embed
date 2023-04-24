@@ -54,6 +54,30 @@ class VimeoProviderTest
         static::assertNull($embedDataThumbnailSizedWithoutHeight->height);
     }
 
+    public function testEmbedDataGetThumbnailNew(): void
+    {
+        /** @var VimeoEmbedData $embedData */
+        $embedData          = Embed::create()->fromUrl('https://vimeo.com/783453158');
+        $embedDataThumbnail = $embedData->getThumbnail();
+
+        static::assertStringEndsWith('/1582080456-a2e326a6c36aa95042a2549ada80e8507061768e4aec00c887cd6531b5cfb499-d_1280x720.jpg', $embedDataThumbnail->url);
+        static::assertSame(1280, $embedDataThumbnail->width);
+        static::assertSame(720, $embedDataThumbnail->height);
+        static::assertSame(null, $embedData->idKey);
+
+        $embedDataThumbnailSized = $embedData->getThumbnailSized(640, 480);
+
+        static::assertStringEndsWith('/1582080456-a2e326a6c36aa95042a2549ada80e8507061768e4aec00c887cd6531b5cfb499-d_640x480.jpg', $embedDataThumbnailSized->url);
+        static::assertSame(640, $embedDataThumbnailSized->width);
+        static::assertSame(480, $embedDataThumbnailSized->height);
+
+        $embedDataThumbnailSizedWithoutHeight = $embedData->getThumbnailSized(640);
+
+        static::assertStringEndsWith('/1582080456-a2e326a6c36aa95042a2549ada80e8507061768e4aec00c887cd6531b5cfb499-d_640.jpg', $embedDataThumbnailSizedWithoutHeight->url);
+        static::assertSame(640, $embedDataThumbnailSizedWithoutHeight->width);
+        static::assertNull($embedDataThumbnailSizedWithoutHeight->height);
+    }
+
     public function testInvalidJsonResponse(): void
     {
         $cachePath = getcwd() . '/tests/.cache/' . UrlSupport::getCacheKey('https://player.vimeo.com/video/124');
