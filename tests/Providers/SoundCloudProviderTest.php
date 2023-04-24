@@ -12,7 +12,7 @@ use Rentalhost\Vanilla\Embed\Providers\SoundCloudProvider;
 class SoundCloudProviderTest
     extends TestCase
 {
-    public function dataProviderIsUrlCompatible(): array
+    public static function dataProviderIsUrlCompatible(): array
     {
         return [
             // Valid URLs.
@@ -33,6 +33,12 @@ class SoundCloudProviderTest
         ];
     }
 
+    /** @dataProvider dataProviderIsUrlCompatible */
+    public static function testIsUrlCompatible(string $url, bool $isValid): void
+    {
+        static::assertSame($isValid, SoundCloudProvider::isUrlCompatible($url));
+    }
+
     public function testEmbedDataGetThumbnail(): void
     {
         /** @var SoundCloudEmbedData $embedData */
@@ -48,11 +54,5 @@ class SoundCloudProviderTest
         static::assertSame('https://i1.sndcdn.com/avatars-000822826894-i1lc70-tiny.jpg', $embedDataThumbnailTiny->url);
         static::assertSame(18, $embedDataThumbnailTiny->width);
         static::assertSame(18, $embedDataThumbnailTiny->height);
-    }
-
-    /** @dataProvider dataProviderIsUrlCompatible */
-    public function testIsUrlCompatible(string $url, bool $isValid): void
-    {
-        static::assertSame($isValid, SoundCloudProvider::isUrlCompatible($url));
     }
 }

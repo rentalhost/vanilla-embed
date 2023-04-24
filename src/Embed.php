@@ -25,7 +25,7 @@ class Embed
     {
     }
 
-    private static function normalizeUrl(string $url): ?string
+    private static function normalizeUrl(string $url): string|null
     {
         if (preg_match('~^https?://(?:www\.)?(.+)~', $url, $urlMatch)) {
             return $urlMatch[1];
@@ -38,15 +38,15 @@ class Embed
         return null;
     }
 
-    public static function create(?array $options = null): self
+    public static function create(array|null $options = null): self
     {
-        $embed          = new static;
+        $embed          = new static();
         $embed->options = $options ?? [];
 
         return $embed;
     }
 
-    public function fromUrl(?string $url): EmbedData
+    public function fromUrl(string|null $url): EmbedData
     {
         if (!$url) {
             throw new InvalidUrlException('Url is empty');
@@ -58,8 +58,10 @@ class Embed
             throw new InvalidUrlException('could not parse Url');
         }
 
-        /** @var Provider|string $embedProviderClass */
-        foreach (self::EMBED_PROVIDERS as $embedProviderClass) {
+        /** @var Provider[] $embedProviders */
+        $embedProviders = self::EMBED_PROVIDERS;
+
+        foreach ($embedProviders as $embedProviderClass) {
             if ($embedProviderClass::isUrlCompatible($normalizedUrl)) {
                 return $embedProviderClass::extractEmbedData($this, $normalizedUrl);
             }
@@ -70,8 +72,7 @@ class Embed
         );
     }
 
-    /** @return mixed */
-    public function getOption(string $name)
+    public function getOption(string $name): mixed
     {
         return $this->options[$name] ?? null;
     }

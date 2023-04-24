@@ -16,7 +16,7 @@ class YoutubeProvider
         ID_REGEXP = '[\w-]{11}',
         ALLOWED_HOSTS = [ 'youtube.com', 'youtu.be' ];
 
-    private static function extractVideoId(string $normalizedUrl): ?string
+    private static function extractVideoId(string $normalizedUrl): string|null
     {
         $postNormalizedUrl     = '//' . self::postNormalizeUrl($normalizedUrl);
         $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
@@ -54,7 +54,7 @@ class YoutubeProvider
         ]);
     }
 
-    private static function isValidId(?string $id): bool
+    private static function isValidId(string|null $id): bool
     {
         if (!$id) {
             return false;
@@ -119,13 +119,14 @@ class YoutubeProvider
             ];
         }
 
-        return EmbedData::withAttributes(array_merge([
+        return EmbedData::withAttributes([
             'provider'   => 'youtube',
             'found'      => true,
             'id'         => $videoId,
             'url'        => $videoUrl,
             'urlEmbed'   => 'https://youtube.com/embed/' . $videoId,
             'thumbnails' => $videoThumbnails,
-        ], $videoProperties))->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
+            ...$videoProperties,
+        ])->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
     }
 }

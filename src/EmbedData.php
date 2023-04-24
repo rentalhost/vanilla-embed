@@ -29,7 +29,7 @@ class EmbedData
 
     public static function withAttributes(array $attributes): self
     {
-        $embedData             = new static;
+        $embedData             = new static();
         $embedData->attributes = $attributes;
 
         return $embedData;
@@ -51,21 +51,19 @@ class EmbedData
         return isset($this->attributes[$name]);
     }
 
-    public function getHtml(?array $urlAttributes = null, ?array $htmlAttributes = null): string
+    public function getHtml(array|null $urlAttributes = null, array|null $htmlAttributes = null): string
     {
         $urlEmbed       = $this->urlEmbed . ($urlAttributes ? '?' . http_build_query($urlAttributes) : null);
-        $htmlAttributes = array_merge([ 'frameborder' => 0 ], (array) $htmlAttributes);
+        $htmlAttributes = [ 'frameborder' => 0, ...(array) $htmlAttributes ];
 
         return sprintf(/** @lang text */ '<iframe src="%s" %s></iframe>', $urlEmbed,
-            implode(' ', array_map(static function (string $attributeKey, $attributeValue) {
-                return sprintf('%s="%s"',
-                    htmlspecialchars($attributeKey, ENT_QUOTES | ENT_HTML5),
-                    htmlspecialchars((string) $attributeValue, ENT_QUOTES | ENT_HTML5));
-            }, array_keys($htmlAttributes), $htmlAttributes))
+            implode(' ', array_map(static fn(string $attributeKey, $attributeValue) => sprintf('%s="%s"',
+                htmlspecialchars($attributeKey, ENT_QUOTES | ENT_HTML5),
+                htmlspecialchars((string) $attributeValue, ENT_QUOTES | ENT_HTML5)), array_keys($htmlAttributes), $htmlAttributes))
         );
     }
 
-    public function getThumbnail(string $name = null): ?ThumbnailData
+    public function getThumbnail(string|null $name = null): ThumbnailData|null
     {
         if (!$this->thumbnails) {
             return null;

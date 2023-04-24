@@ -12,7 +12,7 @@ use Rentalhost\Vanilla\Embed\Exceptions\ProviderNotImplementedException;
 class EmbedTest
     extends TestCase
 {
-    public function dataProviderFromUrl(): array
+    public static function dataProviderFromUrl(): array
     {
         return [
             [

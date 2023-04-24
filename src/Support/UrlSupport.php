@@ -10,14 +10,14 @@ use Rentalhost\Vanilla\Embed\Exceptions\InvalidClientKeyException;
 
 class UrlSupport
 {
-    private static function getContentsUncached(string $url, ?array $querystring, ?array $headers = null): ?string
+    private static function getContentsUncached(string $url, array|null $querystring, array|null $headers = null): string|null
     {
         parse_str((string) parse_url($url, PHP_URL_QUERY), $urlQuerystring);
 
         try {
-            return (new GuzzleClient)->get($url, [
+            return (new GuzzleClient())->get($url, [
                 'headers' => $headers ?? [],
-                'query'   => array_merge($urlQuerystring, $querystring ?? []),
+                'query'   => [ ...$urlQuerystring, ...$querystring ?? [] ],
             ])->getBody()->getContents();
         }
         catch (ClientException $exception) {
@@ -41,14 +41,14 @@ class UrlSupport
         }
     }
 
-    public static function getCacheKey(string $url, ?array $querystring = null, ?array $headers = null): string
+    public static function getCacheKey(string $url, array|null $querystring = null, array|null $headers = null): string
     {
         $urlHostname = parse_url($url, PHP_URL_HOST);
 
         return $urlHostname . '-' . sha1($url . '@' . json_encode($querystring, JSON_THROW_ON_ERROR) . '@' . json_encode($headers, JSON_THROW_ON_ERROR));
     }
 
-    public static function getContents(string $url, ?array $querystring = null, ?array $headers = null): ?string
+    public static function getContents(string $url, array|null $querystring = null, array|null $headers = null): string|null
     {
         $urlCacheEnabled = (bool) getenv('PHPUNIT_URL_CACHE_ENABLED');
 

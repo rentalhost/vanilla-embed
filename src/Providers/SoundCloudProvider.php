@@ -25,7 +25,7 @@ class SoundCloudProvider
         'mini'     => 16,
     ];
 
-    private static function extractTrackId(string $normalizedUrl): ?string
+    private static function extractTrackId(string $normalizedUrl): string|null
     {
         $postNormalizedUrl     = '//' . $normalizedUrl;
         $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
@@ -49,7 +49,7 @@ class SoundCloudProvider
         return null;
     }
 
-    private static function isValidId(?string $id): bool
+    private static function isValidId(string|null $id): bool
     {
         if (!$id) {
             return false;
@@ -92,6 +92,7 @@ class SoundCloudProvider
             $trackId = (int) $trackUrlContentsMatch['trackId'];
         }
 
+        $trackProperties                = [];
         $trackProperties['title']       = $trackMetasExtracted['og:title'];
         $trackProperties['description'] = $trackMetasExtracted['og:description'];
 
@@ -107,7 +108,7 @@ class SoundCloudProvider
             ];
         }
 
-        return SoundCloudEmbedData::withAttributes(array_merge([
+        return SoundCloudEmbedData::withAttributes([
             'provider'    => 'soundcloud',
             'found'       => true,
             'id'          => $trackUser . '/' . $trackName,
@@ -119,6 +120,7 @@ class SoundCloudProvider
             'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' . $trackId .
                              ($trackSecret ? urlencode('?secret_token=' . $trackSecret) : null),
             'thumbnails'  => $trackThumbnails,
-        ], $trackProperties))->setPreferredThumbnailOrder([ 't500x500' ]);
+            ...$trackProperties,
+        ])->setPreferredThumbnailOrder([ 't500x500' ]);
     }
 }

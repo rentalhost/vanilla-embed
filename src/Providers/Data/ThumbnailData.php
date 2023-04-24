@@ -6,19 +6,19 @@ namespace Rentalhost\Vanilla\Embed\Providers\Data;
 
 class ThumbnailData
 {
-    public ?int $height;
+    public int|null $height;
 
     public string $url;
 
-    public ?int $width;
+    public int|null $width;
 
     private function __construct()
     {
     }
 
-    public static function create(string $url, ?int $width, ?int $height): self
+    public static function create(string $url, int|null $width, int|null $height): self
     {
-        $thumbnailData         = new static;
+        $thumbnailData         = new static();
         $thumbnailData->url    = $url;
         $thumbnailData->width  = $width;
         $thumbnailData->height = $height;

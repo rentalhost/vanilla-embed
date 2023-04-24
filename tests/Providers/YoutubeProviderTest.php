@@ -12,7 +12,7 @@ use Rentalhost\Vanilla\Embed\Providers\YoutubeProvider;
 class YoutubeProviderTest
     extends TestCase
 {
-    public function dataProviderIsUrlCompatible(): array
+    public static function dataProviderIsUrlCompatible(): array
     {
         return [
             // Valid URLs.
@@ -37,7 +37,7 @@ class YoutubeProviderTest
     }
 
     /** @dataProvider dataProviderIsUrlCompatible */
-    public function testIsUrlCompatible(string $url, bool $isValid): void
+    public static function testIsUrlCompatible(string $url, bool $isValid): void
     {
         static::assertSame($isValid, YoutubeProvider::isUrlCompatible($url));
     }

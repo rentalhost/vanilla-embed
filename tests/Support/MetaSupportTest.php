@@ -10,7 +10,7 @@ use Rentalhost\Vanilla\Embed\Support\MetaSupport;
 class MetaSupportTest
     extends TestCase
 {
-    public function testExtractMetas(): void
+    public static function testExtractMetas(): void
     {
         static::assertSame([
             'metaName'        => 'ok',

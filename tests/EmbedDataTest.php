@@ -10,6 +10,14 @@ use Rentalhost\Vanilla\Embed\EmbedData;
 class EmbedDataTest
     extends TestCase
 {
+    public static function testIsset(): void
+    {
+        $embedData = EmbedData::withAttributes([ 'id' => '123' ]);
+
+        static::assertTrue(isset($embedData->id));
+        static::assertFalse(isset($embedData->title));
+    }
+
     public function testGetThumbnailAsNull(): void
     {
         $embedData = EmbedData::withAttributes([]);
@@ -50,14 +58,6 @@ class EmbedDataTest
             [ 'loop' => 1 ],
             [ 'width' => '100%', 'data-custom' => '"' ]
         ));
-    }
-
-    public function testIsset(): void
-    {
-        $embedData = EmbedData::withAttributes([ 'id' => '123' ]);
-
-        static::assertTrue(isset($embedData->id));
-        static::assertFalse(isset($embedData->title));
     }
 
     public function testProviderNotImplementedException(): void

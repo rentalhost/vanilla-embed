@@ -14,7 +14,7 @@ use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 class VimeoProviderTest
     extends TestCase
 {
-    public function dataProviderIsUrlCompatible(): array
+    public static function dataProviderIsUrlCompatible(): array
     {
         return [
             // Valid URLs.
@@ -28,6 +28,12 @@ class VimeoProviderTest
             // Invalid Provider URLs.
             [ 'invalid.vimeo.com/29950141', false ],
         ];
+    }
+
+    /** @dataProvider dataProviderIsUrlCompatible */
+    public static function testIsUrlCompatible(string $url, bool $isValid): void
+    {
+        static::assertSame($isValid, VimeoProvider::isUrlCompatible($url));
     }
 
     public function testEmbedDataGetThumbnail(): void
@@ -100,12 +106,6 @@ class VimeoProviderTest
 
         static::assertFalse($embedData->found);
         static::assertSame('123', $embedData->id);
-    }
-
-    /** @dataProvider dataProviderIsUrlCompatible */
-    public function testIsUrlCompatible(string $url, bool $isValid): void
-    {
-        static::assertSame($isValid, VimeoProvider::isUrlCompatible($url));
     }
 
     public function testWithInvalidVimeoKey(): void

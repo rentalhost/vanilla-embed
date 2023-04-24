@@ -13,7 +13,7 @@ class MetaSupport
         $crawlerMetas = [];
 
         $crawler = new Crawler($contents);
-        $crawler->filterXPath($metaXPath)->each(static function (Crawler $node) use (&$crawlerMetas, $metaNames, $metaContent) {
+        $crawler->filterXPath($metaXPath)->each(static function (Crawler $node) use ($metaNames, &$crawlerMetas, $metaContent) {
             $nodeName = null;
 
             foreach ($metaNames as $metaName) {

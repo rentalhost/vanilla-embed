@@ -14,7 +14,7 @@ use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 class VimeoProvider
     extends Provider
 {
-    private static function extractVideoId(string $normalizedUrl): ?string
+    private static function extractVideoId(string $normalizedUrl): string|null
     {
         $postNormalizedUrl     = '//' . $normalizedUrl;
         $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
@@ -33,7 +33,7 @@ class VimeoProvider
         return null;
     }
 
-    private static function getFallbackContents(string $videoId, ?string &$videoKey): ?string
+    private static function getFallbackContents(string $videoId, string|null &$videoKey): string|null
     {
         $videoUrl      = 'https://player.vimeo.com/video/' . $videoId;
         $videoContents = UrlSupport::getContents($videoUrl);
@@ -61,7 +61,7 @@ class VimeoProvider
         return UrlSupport::getContents('https://vimeo.com/' . $videoId . '/' . $videoKey);
     }
 
-    private static function isValidId(?string $id): bool
+    private static function isValidId(string|null $id): bool
     {
         if (!$id) {
             return false;
@@ -72,9 +72,11 @@ class VimeoProvider
 
     private static function normalizeUrl(string $url): string
     {
-        return preg_match('~\.jpg$~', $url)
-            ? $url
-            : $url . '.jpg';
+        if (preg_match('~\.jpg$~', $url)) {
+            return $url;
+        }
+
+        return $url . '.jpg';
     }
 
     public static function isUrlCompatible(string $normalizedUrl): bool
@@ -175,7 +177,7 @@ class VimeoProvider
             }
         }
 
-        return VimeoEmbedData::withAttributes(array_merge([
+        return VimeoEmbedData::withAttributes([
             'provider'   => 'vimeo',
             'found'      => true,
             'id'         => $videoId,
@@ -183,6 +185,7 @@ class VimeoProvider
             'url'        => $videoUrl ?? null,
             'urlEmbed'   => 'https://player.vimeo.com/video/' . $videoId,
             'thumbnails' => $videoThumbnails,
-        ], $videoProperties));
+            ...$videoProperties,
+        ]);
     }
 }
