@@ -87,7 +87,7 @@ class VimeoProviderTest
     public function testWithInvalidVimeoKey(): void
     {
         $this->expectException(InvalidClientKeyException::class);
-        $this->expectErrorMessage('No user credentials were provided.');
+        $this->expectExceptionMessage('No user credentials were provided.');
 
         Embed::create([ 'vimeo.accessToken' => 'invalidAccessToken' ])
             ->fromUrl('https://player.vimeo.com/video/460466078');

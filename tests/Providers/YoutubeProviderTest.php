@@ -71,7 +71,7 @@ class YoutubeProviderTest
     public function testWithInvalidGoogleKey(): void
     {
         $this->expectException(InvalidClientKeyException::class);
-        $this->expectErrorMessage('API key not valid. Please pass a valid API key.');
+        $this->expectExceptionMessage('API key not valid. Please pass a valid API key.');
 
         Embed::create([ 'google.key' => 'invalidKey' ])
             ->fromUrl('https://youtube.com/watch?v=kJQP7kiw5Fk');
