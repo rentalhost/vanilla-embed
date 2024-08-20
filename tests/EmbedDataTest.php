@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Tests;
 
@@ -35,7 +35,12 @@ class EmbedDataTest
     public function testGetThumbnailBasedOnPreferredOrder(): void
     {
         $suggestedUrl = 'https://.../suggested.jpg';
-        $embedData    = EmbedData::withAttributes([ 'thumbnails' => [ 'low' => [ 'url' => 'nope' ], 'high' => [ 'url' => $suggestedUrl ] ] ])
+        $embedData    = EmbedData::withAttributes([
+            'thumbnails' => [
+                'low'  => [ 'url' => 'nope' ],
+                'high' => [ 'url' => $suggestedUrl ]
+            ]
+        ])
             ->setPreferredThumbnailOrder([ 'high' ]);
 
         static::assertSame($suggestedUrl, $embedData->getThumbnail()->url);
@@ -44,7 +49,12 @@ class EmbedDataTest
     public function testGetThumbnailWithoutAPreferredOrder(): void
     {
         $suggestedUrl = 'https://.../suggested.jpg';
-        $embedData    = EmbedData::withAttributes([ 'thumbnails' => [ 'low' => [ 'url' => 'nope' ], 'high' => [ 'url' => $suggestedUrl ] ] ]);
+        $embedData    = EmbedData::withAttributes([
+            'thumbnails' => [
+                'low'  => [ 'url' => 'nope' ],
+                'high' => [ 'url' => $suggestedUrl ]
+            ]
+        ]);
 
         static::assertSame($suggestedUrl, $embedData->getThumbnail()->url);
     }

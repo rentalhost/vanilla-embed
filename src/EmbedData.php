@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed;
 
@@ -23,9 +23,9 @@ use Rentalhost\Vanilla\Embed\Providers\Data\ThumbnailData;
  */
 class EmbedData
 {
-    private array $preferredThumbnailOrder = [];
-
     protected array $attributes = [];
+
+    private array $preferredThumbnailOrder = [];
 
     public static function withAttributes(array $attributes): self
     {

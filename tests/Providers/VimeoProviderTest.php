@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Tests\Providers;
 
@@ -111,7 +111,7 @@ class VimeoProviderTest
     public function testWithInvalidVimeoKey(): void
     {
         $this->expectException(InvalidClientKeyException::class);
-        $this->expectExceptionMessage('No user credentials were provided.');
+        $this->expectExceptionMessage('The app didn\'t receive the user\'s credentials.');
 
         Embed::create([ 'vimeo.accessToken' => 'invalidAccessToken' ])
             ->fromUrl('https://player.vimeo.com/video/460466078');

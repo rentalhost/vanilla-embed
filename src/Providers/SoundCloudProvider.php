@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
@@ -24,44 +24,6 @@ class SoundCloudProvider
         'tiny'     => 18,
         'mini'     => 16,
     ];
-
-    private static function extractTrackId(string $normalizedUrl): string|null
-    {
-        $postNormalizedUrl     = '//' . $normalizedUrl;
-        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
-
-        if ($postNormalizedUrlHost === 'soundcloud.com') {
-            $postNormalizedUrlPath = parse_url($postNormalizedUrl, PHP_URL_PATH);
-
-            if (preg_match('~^/(?<user>[^/]+)(?<trackName>/[^/]+)(?<trackSecret>/[^/]+)?~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
-                return $postNormalizedUrlPathMatch['user'] . $postNormalizedUrlPathMatch['trackName'] . ($postNormalizedUrlPathMatch['trackSecret'] ?? null);
-            }
-        }
-
-        if ($postNormalizedUrlHost === 'w.soundcloud.com') {
-            $postNormalizedLinks = MetaSupport::extractLinksFromUrl($postNormalizedUrl);
-
-            if ($postNormalizedLinks) {
-                return self::extractTrackId(substr($postNormalizedLinks['canonical'], 8));
-            }
-        }
-
-        return null;
-    }
-
-    private static function isValidId(string|null $id): bool
-    {
-        if (!$id) {
-            return false;
-        }
-
-        return (bool) preg_match('~^[^/]+/[^/]+(/[^/]+)?~', $id);
-    }
-
-    public static function isUrlCompatible(string $normalizedUrl): bool
-    {
-        return self::isValidId(self::extractTrackId($normalizedUrl));
-    }
 
     public static function extractEmbedData(Embed $embed, string $normalizedUrl): EmbedData
     {
@@ -122,5 +84,44 @@ class SoundCloudProvider
             'thumbnails'  => $trackThumbnails,
             ...$trackProperties,
         ])->setPreferredThumbnailOrder([ 't500x500' ]);
+    }
+
+    public static function isUrlCompatible(string $normalizedUrl): bool
+    {
+        return self::isValidId(self::extractTrackId($normalizedUrl));
+    }
+
+    private static function extractTrackId(string $normalizedUrl): string|null
+    {
+        $postNormalizedUrl     = '//' . $normalizedUrl;
+        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
+
+        if ($postNormalizedUrlHost === 'soundcloud.com') {
+            $postNormalizedUrlPath = parse_url($postNormalizedUrl, PHP_URL_PATH);
+
+            if (preg_match('~^/(?<user>[^/]+)(?<trackName>/[^/]+)(?<trackSecret>/[^/]+)?~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
+                return $postNormalizedUrlPathMatch['user'] . $postNormalizedUrlPathMatch['trackName'] .
+                       ($postNormalizedUrlPathMatch['trackSecret'] ?? null);
+            }
+        }
+
+        if ($postNormalizedUrlHost === 'w.soundcloud.com') {
+            $postNormalizedLinks = MetaSupport::extractLinksFromUrl($postNormalizedUrl);
+
+            if ($postNormalizedLinks) {
+                return self::extractTrackId(substr($postNormalizedLinks['canonical'], 8));
+            }
+        }
+
+        return null;
+    }
+
+    private static function isValidId(string|null $id): bool
+    {
+        if (!$id) {
+            return false;
+        }
+
+        return (bool) preg_match('~^[^/]+/[^/]+(/[^/]+)?~', $id);
     }
 }

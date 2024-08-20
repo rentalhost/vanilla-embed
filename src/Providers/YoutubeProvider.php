@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
@@ -15,63 +15,6 @@ class YoutubeProvider
     private const
         ID_REGEXP = '[\w-]{11}',
         ALLOWED_HOSTS = [ 'youtube.com', 'youtu.be' ];
-
-    private static function extractVideoId(string $normalizedUrl): string|null
-    {
-        $postNormalizedUrl     = '//' . self::postNormalizeUrl($normalizedUrl);
-        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
-
-        if (!in_array($postNormalizedUrlHost, self::ALLOWED_HOSTS, true)) {
-            return null;
-        }
-
-        $postNormalizedUrlPath = rtrim(parse_url($postNormalizedUrl, PHP_URL_PATH), '/');
-
-        if ($postNormalizedUrlHost === 'youtu.be') {
-            return substr($postNormalizedUrlPath, 1);
-        }
-
-        if ($postNormalizedUrlPath === '/watch') {
-            parse_str((string) parse_url($postNormalizedUrl, PHP_URL_QUERY), $postNormalizedUrlQuerystring);
-
-            return $postNormalizedUrlQuerystring['v'] ?? null;
-        }
-
-        if (preg_match(sprintf('~^/embed/(?<id>%s)(/|$)~', self::ID_REGEXP), $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
-            return $postNormalizedUrlPathMatch['id'];
-        }
-
-        return null;
-    }
-
-    private static function getNotFoundResponse(string $videoId, string $videoUrl): EmbedData
-    {
-        return EmbedData::withAttributes([
-            'provider' => 'youtube',
-            'found'    => false,
-            'id'       => $videoId,
-            'url'      => $videoUrl,
-        ]);
-    }
-
-    private static function isValidId(string|null $id): bool
-    {
-        if (!$id) {
-            return false;
-        }
-
-        return (bool) preg_match('~^' . self::ID_REGEXP . '$~', $id);
-    }
-
-    private static function postNormalizeUrl(string $normalizedUrl): string
-    {
-        return preg_replace('~^m\.~', '', $normalizedUrl);
-    }
-
-    public static function isUrlCompatible(string $normalizedUrl): bool
-    {
-        return self::isValidId(self::extractVideoId($normalizedUrl));
-    }
 
     public static function extractEmbedData(Embed $embed, string $normalizedUrl): EmbedData
     {
@@ -128,5 +71,62 @@ class YoutubeProvider
             'thumbnails' => $videoThumbnails,
             ...$videoProperties,
         ])->setPreferredThumbnailOrder([ 'maxres', 'medium' ]);
+    }
+
+    public static function isUrlCompatible(string $normalizedUrl): bool
+    {
+        return self::isValidId(self::extractVideoId($normalizedUrl));
+    }
+
+    private static function extractVideoId(string $normalizedUrl): string|null
+    {
+        $postNormalizedUrl     = '//' . self::postNormalizeUrl($normalizedUrl);
+        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
+
+        if (!in_array($postNormalizedUrlHost, self::ALLOWED_HOSTS, true)) {
+            return null;
+        }
+
+        $postNormalizedUrlPath = rtrim(parse_url($postNormalizedUrl, PHP_URL_PATH), '/');
+
+        if ($postNormalizedUrlHost === 'youtu.be') {
+            return substr($postNormalizedUrlPath, 1);
+        }
+
+        if ($postNormalizedUrlPath === '/watch') {
+            parse_str((string) parse_url($postNormalizedUrl, PHP_URL_QUERY), $postNormalizedUrlQuerystring);
+
+            return $postNormalizedUrlQuerystring['v'] ?? null;
+        }
+
+        if (preg_match(sprintf('~^/embed/(?<id>%s)(/|$)~', self::ID_REGEXP), $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
+            return $postNormalizedUrlPathMatch['id'];
+        }
+
+        return null;
+    }
+
+    private static function getNotFoundResponse(string $videoId, string $videoUrl): EmbedData
+    {
+        return EmbedData::withAttributes([
+            'provider' => 'youtube',
+            'found'    => false,
+            'id'       => $videoId,
+            'url'      => $videoUrl,
+        ]);
+    }
+
+    private static function isValidId(string|null $id): bool
+    {
+        if (!$id) {
+            return false;
+        }
+
+        return (bool) preg_match('~^' . self::ID_REGEXP . '$~', $id);
+    }
+
+    private static function postNormalizeUrl(string $normalizedUrl): string
+    {
+        return preg_replace('~^m\.~', '', $normalizedUrl);
     }
 }

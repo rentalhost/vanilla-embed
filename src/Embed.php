@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed;
 
@@ -25,6 +25,14 @@ class Embed
     {
     }
 
+    public static function create(array|null $options = null): self
+    {
+        $embed          = new static();
+        $embed->options = $options ?? [];
+
+        return $embed;
+    }
+
     private static function normalizeUrl(string $url): string|null
     {
         if (preg_match('~^https?://(?:www\.)?(.+)~', $url, $urlMatch)) {
@@ -36,14 +44,6 @@ class Embed
         }
 
         return null;
-    }
-
-    public static function create(array|null $options = null): self
-    {
-        $embed          = new static();
-        $embed->options = $options ?? [];
-
-        return $embed;
     }
 
     public function fromUrl(string|null $url): EmbedData

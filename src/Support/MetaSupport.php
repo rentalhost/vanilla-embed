@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Support;
 
@@ -8,6 +8,26 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetaSupport
 {
+    public static function extractLinks(string $contents): array
+    {
+        return self::extractNormalizedMetas($contents, '//link[@rel]', [ 'rel' ], 'href');
+    }
+
+    public static function extractLinksFromUrl(string $url): array
+    {
+        return self::extractLinks((string) UrlSupport::getContents($url));
+    }
+
+    public static function extractMetas(string $contents): array
+    {
+        return self::extractNormalizedMetas($contents, '//meta[@content]', [ 'name', 'property', 'itemprop' ], 'content');
+    }
+
+    public static function extractMetasFromUrl(string $url): array
+    {
+        return self::extractMetas((string) UrlSupport::getContents($url));
+    }
+
     private static function extractNormalizedMetas(string $contents, string $metaXPath, array $metaNames, string $metaContent): array
     {
         $crawlerMetas = [];
@@ -51,25 +71,5 @@ class MetaSupport
         }
 
         return $normalizedMetas;
-    }
-
-    public static function extractLinks(string $contents): array
-    {
-        return self::extractNormalizedMetas($contents, '//link[@rel]', [ 'rel' ], 'href');
-    }
-
-    public static function extractLinksFromUrl(string $url): array
-    {
-        return self::extractLinks((string) UrlSupport::getContents($url));
-    }
-
-    public static function extractMetas(string $contents): array
-    {
-        return self::extractNormalizedMetas($contents, '//meta[@content]', [ 'name', 'property', 'itemprop' ], 'content');
-    }
-
-    public static function extractMetasFromUrl(string $url): array
-    {
-        return self::extractMetas((string) UrlSupport::getContents($url));
     }
 }

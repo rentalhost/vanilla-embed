@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rentalhost\Vanilla\Embed\Providers;
 
@@ -14,76 +14,6 @@ use Rentalhost\Vanilla\Embed\Support\UrlSupport;
 class VimeoProvider
     extends Provider
 {
-    private static function extractVideoId(string $normalizedUrl): string|null
-    {
-        $postNormalizedUrl     = '//' . $normalizedUrl;
-        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
-
-        if ($postNormalizedUrlHost !== 'vimeo.com' &&
-            $postNormalizedUrlHost !== 'player.vimeo.com') {
-            return null;
-        }
-
-        $postNormalizedUrlPath = parse_url($postNormalizedUrl, PHP_URL_PATH);
-
-        if (preg_match('~^(?:/video)?/(?<id>\d+)(?<key>/[\da-f]+)?(?:/|$)~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
-            return $postNormalizedUrlPathMatch['id'] . ($postNormalizedUrlPathMatch['key'] ?? null);
-        }
-
-        return null;
-    }
-
-    private static function getFallbackContents(string $videoId, string|null &$videoKey): string|null
-    {
-        $videoUrl      = 'https://player.vimeo.com/video/' . $videoId;
-        $videoContents = UrlSupport::getContents($videoUrl);
-
-        if (!$videoContents) {
-            return null;
-        }
-
-        $videoMetasOffset = strpos($videoContents, 'var config = ') + 13;
-        $videoMetaSubstr  = substr($videoContents, $videoMetasOffset, strpos($videoContents, '; if (!config.request)') - $videoMetasOffset);
-
-        if (!$videoMetaSubstr) {
-            return null;
-        }
-
-        try {
-            $videoMetasExtracted = json_decode($videoMetaSubstr, true, 512, JSON_THROW_ON_ERROR);
-        }
-        catch (JsonException) {
-            return null;
-        }
-
-        $videoKey = $videoMetasExtracted['video']['unlisted_hash'];
-
-        return UrlSupport::getContents('https://vimeo.com/' . $videoId . '/' . $videoKey);
-    }
-
-    private static function isValidId(string|null $id): bool
-    {
-        if (!$id) {
-            return false;
-        }
-
-        return (bool) preg_match('~^\d+(?:/[\da-f]+)?$~', $id);
-    }
-
-    private static function normalizeUrl(string $url): string
-    {
-        if (preg_match('~\.jpg$~', $url)) {
-            return $url;
-        }
-
-        return $url . '.jpg';
-    }
-
-    public static function isUrlCompatible(string $normalizedUrl): bool
-    {
-        return self::isValidId(self::extractVideoId($normalizedUrl));
-    }
-
     public static function extractEmbedData(Embed $embed, string $normalizedUrl): EmbedData
     {
         [ $videoId, $videoKey ] = array_pad(explode('/', self::extractVideoId($normalizedUrl), 2), 2, null);
@@ -187,5 +117,75 @@ class VimeoProvider
             'thumbnails' => $videoThumbnails,
             ...$videoProperties,
         ]);
+    }
+
+    public static function isUrlCompatible(string $normalizedUrl): bool
+    {
+        return self::isValidId(self::extractVideoId($normalizedUrl));
+    }
+
+    private static function extractVideoId(string $normalizedUrl): string|null
+    {
+        $postNormalizedUrl     = '//' . $normalizedUrl;
+        $postNormalizedUrlHost = parse_url($postNormalizedUrl, PHP_URL_HOST);
+
+        if ($postNormalizedUrlHost !== 'vimeo.com' &&
+            $postNormalizedUrlHost !== 'player.vimeo.com') {
+            return null;
+        }
+
+        $postNormalizedUrlPath = parse_url($postNormalizedUrl, PHP_URL_PATH);
+
+        if (preg_match('~^(?:/video)?/(?<id>\d+)(?<key>/[\da-f]+)?(?:/|$)~', $postNormalizedUrlPath, $postNormalizedUrlPathMatch)) {
+            return $postNormalizedUrlPathMatch['id'] . ($postNormalizedUrlPathMatch['key'] ?? null);
+        }
+
+        return null;
+    }
+
+    private static function getFallbackContents(string $videoId, string|null &$videoKey): string|null
+    {
+        $videoUrl      = 'https://player.vimeo.com/video/' . $videoId;
+        $videoContents = UrlSupport::getContents($videoUrl);
+
+        if (!$videoContents) {
+            return null;
+        }
+
+        $videoMetasOffset = strpos($videoContents, 'var config = ') + 13;
+        $videoMetaSubstr  = substr($videoContents, $videoMetasOffset, strpos($videoContents, '; if (!config.request)') - $videoMetasOffset);
+
+        if (!$videoMetaSubstr) {
+            return null;
+        }
+
+        try {
+            $videoMetasExtracted = json_decode($videoMetaSubstr, true, 512, JSON_THROW_ON_ERROR);
+        }
+        catch (JsonException) {
+            return null;
+        }
+
+        $videoKey = $videoMetasExtracted['video']['unlisted_hash'];
+
+        return UrlSupport::getContents('https://vimeo.com/' . $videoId . '/' . $videoKey);
+    }
+
+    private static function isValidId(string|null $id): bool
+    {
+        if (!$id) {
+            return false;
+        }
+
+        return (bool) preg_match('~^\d+(?:/[\da-f]+)?$~', $id);
+    }
+
+    private static function normalizeUrl(string $url): string
+    {
+        if (preg_match('~\.jpg$~', $url)) {
+            return $url;
+        }
+
+        return $url . '.jpg';
     }
 }
