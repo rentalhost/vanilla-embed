@@ -58,7 +58,7 @@ class EmbedTest
                     'provider' => 'vimeo',
                     'found'    => true,
                     'title'    => 'Landscapes: Volume Two',
-                    'url'      => 'https://vimeo.com/29950141',
+                    'url'      => 'https://vimeo.com/dustinfarrell/landscapes2',
                     'urlEmbed' => 'https://player.vimeo.com/video/29950141',
                     'id'       => '29950141',
                 ],
@@ -69,8 +69,8 @@ class EmbedTest
                     'provider'    => 'vimeo',
                     'found'       => true,
                     'title'       => 'Commencement Address 2018: David Sedaris',
-                    'description' => 'David Sedaris delivers the commencement address at Oberlin College on  Monday, May 28, 2018.  More from Commencement 2018:  https://www.oberlin.edu/commencement',
-                    'url'         => 'https://vimeo.com/273356233/83d37231b0',
+                    'description' => "David Sedaris delivers the commencement address at Oberlin College on  Monday, May 28, 2018. \nMore from Commencement 2018: \nhttps://www.oberlin.edu/commencement",
+                    'url'         => 'https://vimeo.com/273356233',
                     'urlEmbed'    => 'https://player.vimeo.com/video/273356233',
                     'id'          => '273356233',
                 ],
@@ -81,7 +81,7 @@ class EmbedTest
                     'provider'    => 'vimeo',
                     'found'       => true,
                     'title'       => 'Commencement Address 2018: David Sedaris',
-                    'description' => 'David Sedaris delivers the commencement address at Oberlin College on  Monday, May 28, 2018.  More from Commencement 2018:  https://www.oberlin.edu/commencement',
+                    'description' => "David Sedaris delivers the commencement address at Oberlin College on  Monday, May 28, 2018. \nMore from Commencement 2018: \nhttps://www.oberlin.edu/commencement",
                     'url'         => 'https://vimeo.com/273356233',
                     'urlEmbed'    => 'https://player.vimeo.com/video/273356233',
                     'id'          => '273356233',
@@ -138,6 +138,8 @@ class EmbedTest
                 [
                     'provider'    => 'soundcloud',
                     'found'       => false,
+                    'title'       => null,
+                    'description' => null,
                     'url'         => 'https://soundcloud.com/a/b',
                     'id'          => 'a/b',
                     'trackId'     => null,
@@ -152,6 +154,7 @@ class EmbedTest
                     'provider'    => 'soundcloud',
                     'found'       => true,
                     'title'       => 'Impact Moderato (Unlisted)',
+                    'description' => 'Listen to Impact Moderato (Unlisted) by David Rodrigues #np on #SoundCloud',
                     'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
                     'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
                     'id'          => 'david-rodrigues-277280782/impact-moderato',
@@ -167,6 +170,8 @@ class EmbedTest
                 [
                     'provider'    => 'soundcloud',
                     'found'       => false,
+                    'title'       => null,
+                    'description' => null,
                     'url'         => 'https://soundcloud.com/a/b/c',
                     'id'          => 'a/b',
                     'trackId'     => null,
@@ -181,6 +186,7 @@ class EmbedTest
                     'provider'    => 'soundcloud',
                     'found'       => true,
                     'title'       => 'Impact Moderato (Unlisted)',
+                    'description' => 'Listen to Impact Moderato (Unlisted) by David Rodrigues #np on #SoundCloud',
                     'url'         => 'https://soundcloud.com/david-rodrigues-277280782/impact-moderato/s-MjcQ5BtcRPp',
                     'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898937494%3Fsecret_token%3Ds-MjcQ5BtcRPp',
                     'id'          => 'david-rodrigues-277280782/impact-moderato',
@@ -196,7 +202,8 @@ class EmbedTest
     /** @dataProvider dataProviderFromUrl */
     public function testFromUrl(string $url, array $exceptedAttributes): void
     {
-        $embedData = Embed::create()->fromUrl($url);
+        $embedData = Embed::create([ 'vimeo.accessToken' => getenv('VIMEO_ACCESS_TOKEN') ])
+            ->fromUrl($url);
 
         foreach ($exceptedAttributes as $exceptedAttributeKey => $exceptedAttributeValue) {
             static::assertSame(

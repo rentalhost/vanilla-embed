@@ -35,55 +35,57 @@ class SoundCloudProvider
 
         $trackUrlContents = UrlSupport::getContents($trackUrl);
 
-        if (!$trackUrlContents) {
-            return SoundCloudEmbedData::withAttributes([
-                'provider'    => 'soundcloud',
-                'found'       => false,
-                'id'          => $trackUser . '/' . $trackName,
-                'trackId'     => $trackId,
-                'trackUser'   => $trackUser,
-                'trackName'   => $trackName,
-                'trackSecret' => $trackSecret,
-                'url'         => $trackUrl,
-            ]);
-        }
+        if ($trackUrlContents) {
+            $trackMetasExtracted = MetaSupport::extractMetas($trackUrlContents);
 
-        $trackMetasExtracted = MetaSupport::extractMetas($trackUrlContents);
+            if (isset($trackMetasExtracted['og:title'])) {
+                if (preg_match('~soundcloud:tracks:(?<trackId>\d+)~', $trackUrlContents, $trackUrlContentsMatch)) {
+                    $trackId = (int) $trackUrlContentsMatch['trackId'];
+                }
 
-        if (preg_match('~soundcloud:tracks:(?<trackId>\d+)~', $trackUrlContents, $trackUrlContentsMatch)) {
-            $trackId = (int) $trackUrlContentsMatch['trackId'];
-        }
+                $trackProperties                = [];
+                $trackProperties['title']       = $trackMetasExtracted['og:title'];
+                $trackProperties['description'] = $trackMetasExtracted['og:description'];
 
-        $trackProperties                = [];
-        $trackProperties['title']       = $trackMetasExtracted['og:title'];
-        $trackProperties['description'] = $trackMetasExtracted['og:description'];
+                if (preg_match('~"tag_list":"(?<tags>[^"]+)"~', $trackUrlContents, $trackUrlContentsMatch)) {
+                    $trackProperties['tags'] = explode(' ', $trackUrlContentsMatch['tags']);
+                }
 
-        if (preg_match('~"tag_list":"(?<tags>[^"]+)"~', $trackUrlContents, $trackUrlContentsMatch)) {
-            $trackProperties['tags'] = explode(' ', $trackUrlContentsMatch['tags']);
-        }
+                foreach (self::THUMBNAIL_SIZES as $thumbnailName => $thumbnailSize) {
+                    $trackThumbnails[$thumbnailName] = [
+                        'url'    => preg_replace('~(-)t500x500(\.)~', '$1' . $thumbnailName . '$2', $trackMetasExtracted['og:image']),
+                        'width'  => $thumbnailSize,
+                        'height' => $thumbnailSize,
+                    ];
+                }
 
-        foreach (self::THUMBNAIL_SIZES as $thumbnailName => $thumbnailSize) {
-            $trackThumbnails[$thumbnailName] = [
-                'url'    => preg_replace('~(-)t500x500(\.)~', '$1' . $thumbnailName . '$2', $trackMetasExtracted['og:image']),
-                'width'  => $thumbnailSize,
-                'height' => $thumbnailSize,
-            ];
+                return SoundCloudEmbedData::withAttributes([
+                    'provider'    => 'soundcloud',
+                    'found'       => true,
+                    'id'          => $trackUser . '/' . $trackName,
+                    'trackId'     => $trackId,
+                    'trackUser'   => $trackUser,
+                    'trackName'   => $trackName,
+                    'trackSecret' => $trackSecret,
+                    'url'         => $trackUrl,
+                    'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' . $trackId .
+                                     ($trackSecret ? urlencode('?secret_token=' . $trackSecret) : null),
+                    'thumbnails'  => $trackThumbnails,
+                    ...$trackProperties,
+                ])->setPreferredThumbnailOrder([ 't500x500' ]);
+            }
         }
 
         return SoundCloudEmbedData::withAttributes([
             'provider'    => 'soundcloud',
-            'found'       => true,
+            'found'       => false,
             'id'          => $trackUser . '/' . $trackName,
             'trackId'     => $trackId,
             'trackUser'   => $trackUser,
             'trackName'   => $trackName,
             'trackSecret' => $trackSecret,
             'url'         => $trackUrl,
-            'urlEmbed'    => 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' . $trackId .
-                             ($trackSecret ? urlencode('?secret_token=' . $trackSecret) : null),
-            'thumbnails'  => $trackThumbnails,
-            ...$trackProperties,
-        ])->setPreferredThumbnailOrder([ 't500x500' ]);
+        ]);
     }
 
     public static function isUrlCompatible(string $normalizedUrl): bool

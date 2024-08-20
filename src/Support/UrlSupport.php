@@ -6,6 +6,7 @@ namespace Rentalhost\Vanilla\Embed\Support;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
+use JsonException;
 use Rentalhost\Vanilla\Embed\Exceptions\InvalidClientKeyException;
 
 class UrlSupport
@@ -58,13 +59,18 @@ class UrlSupport
             }
 
             if (in_array($exceptionCode, [ 400, 401 ], true)) {
-                $exceptionResponse = json_decode($exception->getResponse()->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+                try {
+                    $exceptionResponse = json_decode($exception->getResponse()->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
-                throw new InvalidClientKeyException(
-                    $exceptionResponse['error']['message'] ?? $exceptionResponse['developer_message'],
-                    $exceptionCode,
-                    $exception
-                );
+                    throw new InvalidClientKeyException(
+                        $exceptionResponse['error']['message'] ?? $exceptionResponse['developer_message'],
+                        $exceptionCode,
+                        $exception
+                    );
+                }
+                catch (JsonException) {
+                    return null;
+                }
             }
 
             throw $exception;
